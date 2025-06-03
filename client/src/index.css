@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --background: 240 10% 3.9%; /* #0A0A0A */
+  --foreground: 0 0% 98%; /* #FAFAFA */
+  --muted: 240 3.7% 15.9%; /* #1A1A1A */
+  --muted-foreground: 240 5% 64.9%; /* #A1A1AA */
+  --popover: 240 10% 3.9%; /* #0A0A0A */
+  --popover-foreground: 0 0% 98%; /* #FAFAFA */
+  --card: 240 10% 3.9%; /* #0A0A0A */
+  --card-foreground: 0 0% 98%; /* #FAFAFA */
+  --border: 240 3.7% 15.9%; /* #1A1A1A */
+  --input: 240 3.7% 15.9%; /* #1A1A1A */
+  --primary: 180 100% 50%; /* #00FFFF - Cyber Blue */
+  --primary-foreground: 240 10% 3.9%; /* #0A0A0A */
+  --secondary: 240 3.7% 15.9%; /* #1A1A1A */
+  --secondary-foreground: 0 0% 98%; /* #FAFAFA */
+  --accent: 120 100% 50%; /* #00FF00 - Neon Green */
+  --accent-foreground: 240 10% 3.9%; /* #0A0A0A */
+  --destructive: 0 62.8% 30.6%; /* #DC2626 */
+  --destructive-foreground: 0 0% 98%; /* #FAFAFA */
+  --ring: 180 100% 50%; /* #00FFFF */
+  --radius: 0.5rem;
+
+  /* Custom cyberpunk colors */
+  --cyber-blue: 180 100% 50%; /* #00FFFF */
+  --neon-green: 120 100% 63%; /* #00FF41 */
+  --deep-purple: 277 100% 50%; /* #8B00FF */
+  --hot-pink: 328 100% 54%; /* #FF1493 */
+  --bright-orange: 16 100% 60%; /* #FF6B35 */
+  --warning-yellow: 51 100% 50%; /* #FFD700 */
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 180 100% 50%;
+  --primary-foreground: 240 10% 3.9%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 120 100% 63%;
+  --accent-foreground: 240 10% 3.9%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 180 100% 50%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-futuristic {
+    font-family: 'Orbitron', sans-serif;
+  }
+}
+
+@layer components {
+  .holographic {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(139, 0, 255, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+  }
+
+  .terminal-glow {
+    box-shadow: 
+      inset 0 0 20px rgba(0, 255, 65, 0.1),
+      0 0 20px rgba(0, 255, 65, 0.2);
+  }
+
+  .proof-verified {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .circuit-pattern {
+    background-image: 
+      radial-gradient(circle at 2px 2px, rgba(0, 255, 255, 0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .matrix-bg {
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 65, 0.1) 50%, transparent 100%);
+  }
+
+  .cyber-border {
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #00FF41, #00FFFF, #FF1493, #8B00FF) 1;
+  }
+
+  .gradient-text {
+    background: linear-gradient(45deg, #00FFFF, #00FF41);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+@layer utilities {
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  .animate-typing {
+    animation: typing 2s steps(20) infinite;
+  }
+
+  .animate-matrix {
+    animation: matrix 20s linear infinite;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px hsl(var(--cyber-blue)), 0 0 10px hsl(var(--cyber-blue)), 0 0 15px hsl(var(--cyber-blue));
+  }
+  to {
+    box-shadow: 0 0 10px hsl(var(--cyber-blue)), 0 0 20px hsl(var(--cyber-blue)), 0 0 30px hsl(var(--cyber-blue));
+  }
+}
+
+@keyframes matrix {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes typing {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--cyber-blue) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--cyber-blue) / 0.5);
+}
