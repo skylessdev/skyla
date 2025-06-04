@@ -144,7 +144,8 @@ export class MemStorage implements IStorage {
       ...insertProof, 
       id: this.currentId++,
       verified: true,
-      timestamp: new Date()
+      timestamp: new Date(),
+      previousProofHash: insertProof.previousProofHash || null
     };
     this.proofs.set(insertProof.hash, proof);
     return proof;
@@ -177,7 +178,9 @@ export class MemStorage implements IStorage {
     const state: SymbolicState = { 
       ...insertState, 
       id, 
-      timestamp: new Date()
+      timestamp: new Date(),
+      previousStateHash: insertState.previousStateHash || null,
+      ruleApplied: insertState.ruleApplied || null
     };
     this.symbolicStates.set(id, state);
     return state;

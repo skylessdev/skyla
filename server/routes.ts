@@ -34,14 +34,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate symbolic state transition
       const currentState = await storage.getCurrentSymbolicState();
       const newState = await symbolicEngine.generateSymbolicTransition(
-        currentState,
+        currentState || null,
         validatedMessage.content,
         response.mode
       );
       
       // Generate ZK proof for the symbolic transition
       const proof = await proofGenerator.generateTransitionProof(
-        currentState,
+        currentState || null,
         newState,
         validatedMessage.content
       );
@@ -223,7 +223,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             results.push({ circuit: circuit.name, status: "failed" });
           }
         } catch (error) {
-          results.push({ circuit: circuit.name, status: "error", error: error.message });
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          results.push({ circuit: circuit.name, status: "error", error: errorMessage });
         }
       }
       

@@ -1,6 +1,4 @@
 import { createHash } from 'crypto';
-import * as snarkjs from 'snarkjs';
-import { poseidon } from 'poseidon-lite';
 import type { SymbolicState } from '@shared/schema';
 
 export interface GeneratedProof {
@@ -134,15 +132,10 @@ export class ProofGenerator {
   }
 
   private hashArray(array: number[]): bigint {
-    // Use poseidon hash for zk-friendly hashing
-    try {
-      return poseidon(array.map(x => BigInt(Math.floor(x * 1000000))));
-    } catch (error) {
-      // Fallback to simple hash if poseidon fails
-      const str = array.join(',');
-      const hash = createHash('sha256').update(str).digest('hex');
-      return BigInt('0x' + hash.slice(0, 16));
-    }
+    // Use SHA256 hash for demo purposes
+    const str = array.join(',');
+    const hash = createHash('sha256').update(str).digest('hex');
+    return BigInt('0x' + hash.slice(0, 16));
   }
 
   private calculateTransition(prev: number[], curr: number[]): number[] {
