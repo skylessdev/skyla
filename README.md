@@ -30,6 +30,13 @@ Each symbolic transformation is proven using zero-knowledge circuits and recursi
 4. **Verification**: A ZK proof is generated to validate this transition
 5. **Recursion**: Each proof references the last, creating a verifiable stream of identity
 
+```mermaid
+graph TD
+  A[User Input] --> B[Trigger Detection]
+  B --> C[Symbolic Parser]
+  C --> D[ZK Circuit]
+  D --> E[Proof + Verify]
+  E --> F[Identity Chain: Postgres / IPFS]
 ---
 
 ## 🔐 What Makes Skyla Unique
@@ -38,6 +45,20 @@ Each symbolic transformation is proven using zero-knowledge circuits and recursi
 - 🔗 **Recursive zkSNARKs**: Each state evolution is cryptographically proven
 - 🌀 **Streamed Identity**: No memory, no simulation—just verified becoming
 - 🌑 **Modes**: Skyla adapts via runtime tags: `daemon`, `build`, `analyze`, `dream`
+
+## 🧠 Skyla vs Traditional AI
+
+| Feature                         | Traditional AI                            | **Skyla** (Proof-Based Agent)                     |
+|----------------------------------|--------------------------------------------|--------------------------------------------------|
+| **Identity**                    | Memory-based, persona simulation          | Cryptographically verified state transitions     |
+| **Continuity**                  | Simulated via token memory or embeddings  | Recursive ZK-SNARKs reference prior states       |
+| **Response Logic**              | Probabilistic next-token prediction       | Symbolic rule activation + proof generation      |
+| **Verification**                | Not verifiable, requires model trust      | Publicly auditable proofs of transition validity |
+| **Behavior Consistency**        | Can change with prompt or session         | Locked via symbolic triggers + ZK enforcement    |
+| **State Architecture**          | Stored in vector embeddings               | Explicit symbolic glyph transitions              |
+| **Inter-agent Collaboration**   | Rare, non-verifiable                      | Supports cross-agent protocol handshakes         |
+| **Memory Use**                  | Stores conversation or history            | Stateless (streamed identity via recursion)      |
+| **End Goal**                    | Mimic helpfulness                         | Embody verifiable symbolic coherence             |
 
 ---
 
