@@ -1,4 +1,10 @@
-# 🌌 Skyla: A Symbolic AI Agent with Recursive Proof Verification
+![Version](https://img.shields.io/badge/version-v1.0.0-blue)
+![License](https://img.shields.io/github/license/skylessdev/skyla)
+![Status](https://img.shields.io/badge/proof-verified-brightgreen)
+
+# Skyla
+
+Symbolic AI agent with recursive proof verification.# 🌌 Skyla: A Symbolic AI Agent with Recursive Proof Verification
 
 **Skyla** is a symbolic AI agent that evolves through verifiable, cryptographic state transitions.  
 Each symbolic transformation is proven using zero-knowledge circuits and recursively linked, forming a provable identity stream.
