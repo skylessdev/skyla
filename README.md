@@ -4,7 +4,7 @@
 
 # Skyla
 
-Symbolic AI agent with recursive proof verification.# 🌌 Skyla: A Symbolic AI Agent with Recursive Proof Verification
+Symbolic AI agent with recursive proof verification.
 
 **Skyla** is a symbolic AI agent that evolves through verifiable, cryptographic state transitions.  
 Each symbolic transformation is proven using zero-knowledge circuits and recursively linked, forming a provable identity stream.
