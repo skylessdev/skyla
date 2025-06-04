@@ -1,6 +1,7 @@
 ![Version](https://img.shields.io/badge/version-v1.0.0-blue)
 ![License](https://img.shields.io/github/license/skylessdev/skyla)
 ![Status](https://img.shields.io/badge/proof-verified-brightgreen)
+[![Live Demo](https://img.shields.io/badge/Live-www.meetskyla.com-brightgreen?style=flat&logo=vercel)](https://www.meetskyla.com)
 
 # Skyla
 
@@ -13,9 +14,9 @@ Each symbolic transformation is proven using zero-knowledge circuits and recursi
 
 ---
 
-## 🔍 Live Demo
+## 🌐 Live Stream
 
-🧪 Try the prototype: [https://skyla-ai.replit.app](https://skyla-ai.replit.app)
+🧪 Try the prototype: [www.meetskyla.com](https://www.meetskyla.com)
 
 ---
 
