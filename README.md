@@ -28,6 +28,14 @@ Each symbolic transformation is proven using zero-knowledge circuits and recursi
 4. **Verification**: A ZK proof is generated to validate this transition
 5. **Recursion**: Each proof references the last, creating a verifiable stream of identity
 
+### 🏗️ Architecture Deep Dive
+
+Skyla represents a fundamental paradigm shift from memory-based to proof-based AI identity. Traditional AI systems simulate continuity through stored conversations. Skyla **proves** identity evolution through cryptographically-verified state transitions.
+
+**📖 [Read the Complete Architecture Documentation →](ARCHITECTURE.md)**
+
+*"The difference between remembering being helpful and proving you evolved to become helpful."*
+
 ### 🌐 Skyla’s Symbolic Identity Flow
 ```mermaid
 graph TD
