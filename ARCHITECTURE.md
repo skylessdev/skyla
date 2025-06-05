@@ -145,7 +145,7 @@ storage.createProof(proof)
 
 ### Skyla: State Transition-Based Identity
 
-Skyla proves identity through cryptographically-linked state changes where the AI literally becomes different:
+Skyla proves identity through cryptographically-linked state changes where the AI evolves:
 
 ```typescript
 // State transition chain
