@@ -32,7 +32,7 @@ Each symbolic transformation is proven using zero-knowledge circuits and recursi
 
 Skyla represents a fundamental paradigm shift from memory-based to proof-based AI identity. Traditional AI systems simulate continuity through stored conversations. Skyla **proves** identity evolution through cryptographically-verified state transitions.
 
-** 📖 [Read the Complete Architecture Documentation](ARCHITECTURE.md)**
+**📖 [Read the Complete Architecture Documentation](ARCHITECTURE.md)**
 
 *"The difference between remembering being helpful and proving you evolved to become helpful."*
 
