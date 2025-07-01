@@ -4,12 +4,47 @@ import { storage } from "./storage";
 import { insertMessageSchema } from "@shared/schema";
 import { ProofGenerator } from "./lib/proof-generator";
 import { SymbolicEngine } from "./lib/symbolic-engine";
+import type { Snapshot } from "@shared/schema";
 
 const proofGenerator = new ProofGenerator();
 const symbolicEngine = new SymbolicEngine();
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Get chat messages
+  // ✅ Submit Snapshot
+  app.post("/api/submitSnapshot", async (req, res) => {
+    try {
+      const snapshot: Snapshot = req.body;
+
+      const prevState = await storage.getCurrentSymbolicState();
+
+      const newState = {
+        mode: "standard",
+        tone: "neutral",
+        protocols: ["snapshot_input"],
+        identityVector: [
+          snapshot.symbolic_vector.cognitive,
+          snapshot.symbolic_vector.emotional,
+          snapshot.symbolic_vector.adaptive,
+          snapshot.symbolic_vector.coherence
+        ],
+        previousStateHash: prevState?.currentStateHash || null,
+        currentStateHash: "0x" + Math.random().toString(16).slice(2, 64),
+        ruleApplied: "snapshot_ingest"
+      };
+
+      await storage.createSymbolicState(newState);
+
+      res.json({
+        message: "Snapshot stored",
+        newState
+      });
+    } catch (error) {
+      console.error("Error submitting snapshot:", error);
+      res.status(500).json({ message: "Failed to submit snapshot" });
+    }
+  });
+
+  // ✅ Get chat messages
   app.get("/api/messages", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 50;
@@ -20,33 +55,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Send message and generate AI response
+  // ✅ Send message and generate AI response
   app.post("/api/messages", async (req, res) => {
     try {
       const validatedMessage = insertMessageSchema.parse(req.body);
-      
-      // Store user message
+
       const userMessage = await storage.createMessage(validatedMessage);
-      
-      // Process message through symbolic engine
+
       const response = await symbolicEngine.processMessage(validatedMessage.content);
-      
-      // Generate symbolic state transition
+
       const currentState = await storage.getCurrentSymbolicState();
       const newState = await symbolicEngine.generateSymbolicTransition(
         currentState || null,
         validatedMessage.content,
         response.mode
       );
-      
-      // Generate ZK proof for the symbolic transition
+
       const proof = await proofGenerator.generateTransitionProof(
         currentState || null,
         newState,
         validatedMessage.content
       );
-      
-      // Store proof
+
       await storage.createProof({
         hash: proof.hash,
         proof: proof.proof,
@@ -54,19 +84,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         previousProofHash: currentState?.currentStateHash || null,
         circuitName: "SymbolicTransition"
       });
-      
-      // Store new symbolic state
+
       await storage.createSymbolicState(newState);
-      
-      // Store AI response message
+
       const aiMessage = await storage.createMessage({
         content: response.content,
         role: "assistant"
       });
-      
-      // Update message with proof reference
+
       await storage.updateMessageProof(aiMessage.id, proof.hash, newState);
-      
+
       res.json({
         userMessage,
         aiMessage,
@@ -79,7 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get proof verification status
+  // ✅ Get proof verification status
   app.get("/api/proofs", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
@@ -90,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get specific proof
+  // ✅ Get specific proof
   app.get("/api/proofs/:hash", async (req, res) => {
     try {
       const proof = await storage.getProof(req.params.hash);
@@ -103,16 +130,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Generate new proof manually
+  // ✅ Generate new proof manually
   app.post("/api/proofs/generate", async (req, res) => {
     try {
       const currentState = await storage.getCurrentSymbolicState();
       if (!currentState) {
         return res.status(400).json({ message: "No current symbolic state found" });
       }
-      
+
       const proof = await proofGenerator.generateIdentityProof(currentState);
-      
+
       await storage.createProof({
         hash: proof.hash,
         proof: proof.proof,
@@ -120,7 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         previousProofHash: currentState.currentStateHash,
         circuitName: "Identity"
       });
-      
+
       res.json(proof);
     } catch (error) {
       console.error("Error generating proof:", error);
@@ -128,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get current symbolic state
+  // ✅ Get current symbolic state
   app.get("/api/symbolic-state", async (req, res) => {
     try {
       const state = await storage.getCurrentSymbolicState();
@@ -141,7 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get symbolic state history
+  // ✅ Get symbolic state history
   app.get("/api/symbolic-state/history", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
@@ -152,26 +179,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Switch AI mode
+  // ✅ Switch AI mode
   app.post("/api/mode", async (req, res) => {
     try {
       const { mode } = req.body;
       const currentState = await storage.getCurrentSymbolicState();
-      
+
       if (!currentState) {
         return res.status(400).json({ message: "No current symbolic state found" });
       }
-      
+
       const newState = await symbolicEngine.switchMode(currentState, mode);
-      
-      // Generate proof for mode switch
+
       const proof = await proofGenerator.generateTransitionProof(
         currentState,
         newState,
         `Mode switch to ${mode}`
       );
-      
-      // Store proof and new state
+
       await storage.createProof({
         hash: proof.hash,
         proof: proof.proof,
@@ -179,9 +204,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         previousProofHash: currentState.currentStateHash,
         circuitName: "SymbolicTransition"
       });
-      
+
       await storage.createSymbolicState(newState);
-      
+
       res.json({
         symbolicState: newState,
         proof: proof.hash
@@ -192,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get circuit status
+  // ✅ Get circuit status
   app.get("/api/circuits", async (req, res) => {
     try {
       const circuits = await storage.getCircuits();
@@ -202,12 +227,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Recompile circuits
+  // ✅ Recompile circuits
   app.post("/api/circuits/recompile", async (req, res) => {
     try {
       const circuits = await storage.getCircuits();
       const results = [];
-      
+
       for (const circuit of circuits) {
         try {
           const compiled = await proofGenerator.compileCircuit(circuit.name);
@@ -223,11 +248,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             results.push({ circuit: circuit.name, status: "failed" });
           }
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
           results.push({ circuit: circuit.name, status: "error", error: errorMessage });
         }
       }
-      
+
       res.json({ results });
     } catch (error) {
       console.error("Error recompiling circuits:", error);
@@ -235,16 +260,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get system metrics
+  // ✅ Get system metrics
   app.get("/api/metrics", async (req, res) => {
     try {
       const proofs = await storage.getRecentProofs(100);
       const verifiedProofs = proofs.filter(p => p.verified);
-      
-      const avgProofTime = 847; // Simulated - would be calculated from actual timing data
+
+      const avgProofTime = 847; // Simulated
       const circuitEfficiency = Math.round((verifiedProofs.length / proofs.length) * 100) || 92;
-      const memoryUsage = "64MB"; // Simulated - would come from actual system monitoring
-      
+      const memoryUsage = "64MB"; // Simulated
+
       res.json({
         proofGeneration: `${avgProofTime}ms`,
         circuitEfficiency: `${circuitEfficiency}%`,
@@ -258,6 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ✅ Return HTTP server at the end
   const httpServer = createServer(app);
   return httpServer;
 }
