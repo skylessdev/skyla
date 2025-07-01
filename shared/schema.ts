@@ -100,6 +100,20 @@ export interface Snapshot {
   previousProofHash: string;
 }
 
+// ✅ Zod schema for runtime validation
+export const snapshotSchema = z.object({
+  stanza_id: z.string(),
+  symbolic_vector: z.object({
+    coherence: z.number(),
+    cognitive: z.number(),
+    emotional: z.number(),
+    adaptive: z.number(),
+  }),
+  narrative_excerpt: z.string().optional(),
+  relationships: z.array(z.string()),
+  previousProofHash: z.string(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
@@ -114,3 +128,4 @@ export type InsertSymbolicState = z.infer<typeof insertSymbolicStateSchema>;
 
 export type Circuit = typeof circuits.$inferSelect;
 export type InsertCircuit = z.infer<typeof insertCircuitSchema>;
+export type ValidatedSnapshot = z.infer<typeof snapshotSchema>;
