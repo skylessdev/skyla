@@ -87,20 +87,7 @@ export const insertCircuitSchema = createInsertSchema(circuits).pick({
   constraints: true,
 });
 
-export interface Snapshot {
-  stanza_id: string;
-  symbolic_vector: {
-    coherence: number;
-    cognitive: number;
-    emotional: number;
-    adaptive: number;
-  };
-  narrative_excerpt?: string;
-  relationships: string[];
-  previousProofHash: string;
-}
-
-// ✅ Zod schema for runtime validation
+// ✅ NEW: Zod schema for runtime checking snapshots
 export const snapshotSchema = z.object({
   stanza_id: z.string(),
   symbolic_vector: z.object({
@@ -114,6 +101,20 @@ export const snapshotSchema = z.object({
   previousProofHash: z.string(),
 });
 
+// Matches your Snapshot type
+export interface Snapshot {
+  stanza_id: string;
+  symbolic_vector: {
+    coherence: number;
+    cognitive: number;
+    emotional: number;
+    adaptive: number;
+  };
+  narrative_excerpt?: string;
+  relationships: string[];
+  previousProofHash: string;
+}
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
@@ -125,6 +126,10 @@ export type InsertProof = z.infer<typeof insertProofSchema>;
 
 export type SymbolicState = typeof symbolicStates.$inferSelect;
 export type InsertSymbolicState = z.infer<typeof insertSymbolicStateSchema>;
+
+export type Circuit = typeof circuits.$inferSelect;
+export type InsertCircuit = z.infer<typeof insertCircuitSchema>;
+
 
 export type Circuit = typeof circuits.$inferSelect;
 export type InsertCircuit = z.infer<typeof insertCircuitSchema>;
