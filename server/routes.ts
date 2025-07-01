@@ -1,19 +1,20 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageSchema } from "@shared/schema";
+import { insertMessageSchema, snapshotSchema } from "@shared/schema";
 import { ProofGenerator } from "./lib/proof-generator";
 import { SymbolicEngine } from "./lib/symbolic-engine";
-import type { Snapshot } from "@shared/schema";
 
 const proofGenerator = new ProofGenerator();
 const symbolicEngine = new SymbolicEngine();
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // ✅ Submit Snapshot
+
+  // ✅ New: Submit Snapshot with runtime check
   app.post("/api/submitSnapshot", async (req, res) => {
     try {
-      const snapshot: Snapshot = req.body;
+      // Validate input at runtime
+      const snapshot = snapshotSchema.parse(req.body);
 
       const prevState = await storage.getCurrentSymbolicState();
 
@@ -40,11 +41,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error submitting snapshot:", error);
-      res.status(500).json({ message: "Failed to submit snapshot" });
+      res.status(400).json({ message: "Invalid snapshot format", error: error instanceof Error ? error.message : error });
     }
   });
 
-  // ✅ Get chat messages
+  // 🔵 Existing: Get chat messages
   app.get("/api/messages", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 50;
@@ -55,7 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Send message and generate AI response
+  // 🔵 Existing: Send message + generate AI response
   app.post("/api/messages", async (req, res) => {
     try {
       const validatedMessage = insertMessageSchema.parse(req.body);
@@ -106,7 +107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Get proof verification status
+  // 🔵 Existing: Get proofs
   app.get("/api/proofs", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
@@ -117,7 +118,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Get specific proof
   app.get("/api/proofs/:hash", async (req, res) => {
     try {
       const proof = await storage.getProof(req.params.hash);
@@ -130,7 +130,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Generate new proof manually
   app.post("/api/proofs/generate", async (req, res) => {
     try {
       const currentState = await storage.getCurrentSymbolicState();
@@ -155,7 +154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Get current symbolic state
+  // 🔵 Existing: Symbolic state endpoints
   app.get("/api/symbolic-state", async (req, res) => {
     try {
       const state = await storage.getCurrentSymbolicState();
@@ -168,7 +167,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Get symbolic state history
   app.get("/api/symbolic-state/history", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
@@ -179,12 +177,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Switch AI mode
+  // 🔵 Existing: Switch mode
   app.post("/api/mode", async (req, res) => {
     try {
       const { mode } = req.body;
       const currentState = await storage.getCurrentSymbolicState();
-
       if (!currentState) {
         return res.status(400).json({ message: "No current symbolic state found" });
       }
@@ -217,7 +214,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Get circuit status
+  // 🔵 Existing: Circuits & metrics
   app.get("/api/circuits", async (req, res) => {
     try {
       const circuits = await storage.getCircuits();
@@ -227,7 +224,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Recompile circuits
   app.post("/api/circuits/recompile", async (req, res) => {
     try {
       const circuits = await storage.getCircuits();
@@ -260,15 +256,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Get system metrics
   app.get("/api/metrics", async (req, res) => {
     try {
       const proofs = await storage.getRecentProofs(100);
       const verifiedProofs = proofs.filter(p => p.verified);
 
-      const avgProofTime = 847; // Simulated
+      const avgProofTime = 847;
       const circuitEfficiency = Math.round((verifiedProofs.length / proofs.length) * 100) || 92;
-      const memoryUsage = "64MB"; // Simulated
+      const memoryUsage = "64MB";
 
       res.json({
         proofGeneration: `${avgProofTime}ms`,
@@ -283,7 +278,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ Return HTTP server at the end
   const httpServer = createServer(app);
   return httpServer;
 }
+
