@@ -87,6 +87,19 @@ export const insertCircuitSchema = createInsertSchema(circuits).pick({
   constraints: true,
 });
 
+export interface Snapshot {
+  stanza_id: string;
+  symbolic_vector: {
+    coherence: number;
+    cognitive: number;
+    emotional: number;
+    adaptive: number;
+  };
+  narrative_excerpt?: string;
+  relationships: string[];
+  previousProofHash: string;
+}
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
