@@ -51,6 +51,7 @@ app.use((req, res, next) => {
     // Fallback: serve index.html for any unmatched route
     app.get("*", (req, res) => {
       const indexFile = path.join(distPath, "index.html");
+      console.log("Looking for index.html at:", indexFile, "Exists?", fs.existsSync(indexFile));
       if (fs.existsSync(indexFile)) {
         res.sendFile(indexFile);
       } else {
