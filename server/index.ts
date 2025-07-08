@@ -1,6 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
+import fs from "fs";
 
 const app = express();
 app.use(express.json());
@@ -9,7 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 // ✅ Request logging & response capture
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const reqPath = req.path;
 
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
@@ -21,7 +23,7 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    console.log(`[${req.method}] ${path} ${res.statusCode} - ${duration}ms`);
+    console.log(`[${req.method}] ${reqPath} ${res.statusCode} - ${duration}ms`);
   });
 
   next();
@@ -31,21 +33,32 @@ app.use((req, res, next) => {
   // ✅ Register all API routes
   const server = await registerRoutes(app);
 
-  // ✅ Setup Vite dev server or static production
-  if (app.get("env") === "development") {
+  const PORT = process.env.PORT || 5000;
+  const HOST = "0.0.0.0";
+
+  if (app.get("env") === "development" || process.env.NODE_ENV === "development") {
     await setupVite(app, server);
+    log(`🟢 [DEV] Vite middleware enabled. Running at http://localhost:${PORT}`);
   } else {
-    serveStatic(app);
+    // Serve static files from client/dist
+    const distPath = path.resolve(__dirname, "../client/dist");
+    app.use(express.static(distPath));
+
+    // Fallback: serve index.html for any unmatched route
+    app.get("*", (req, res) => {
+      const indexFile = path.join(distPath, "index.html");
+      if (fs.existsSync(indexFile)) {
+        res.sendFile(indexFile);
+      } else {
+        res.status(404).send("index.html not found");
+      }
+    });
+    log(`🟣 [PROD] Serving static files from ${distPath}`);
+    log(`🟣 [PROD] Fallback to index.html for SPA routes.`);
   }
 
-  // ✅ Listen safely on 127.0.0.1 instead of 0.0.0.0 for local dev
-  const PORT = process.env.PORT || 5000;
-  server.listen(
-    Number(PORT),
-    "127.0.0.1",
-    () => {
-      log(`✅ Server running at http://127.0.0.1:${PORT}`);
-    }
-  );
+  server.listen(Number(PORT), HOST, () => {
+    log(`✅ Server running at http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`);
+  });
 })();
 
