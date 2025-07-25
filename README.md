@@ -1,7 +1,9 @@
-![Version](https://img.shields.io/badge/version-v1.0.0-blue)
+![Version](https://img.shields.io/badge/version-v1.0.1-blue)
 ![License](https://img.shields.io/github/license/skylessdev/skyla)
 ![Status](https://img.shields.io/badge/proof-verified-brightgreen)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16419672.svg)](https://doi.org/10.5281/zenodo.16419672)
 [![Live Demo](https://img.shields.io/badge/Live-www.meetskyla.com-brightgreen?style=flat&logo=vercel)](https://www.meetskyla.com)
+
 
 # Skyla - A cryptographically verified symbolic AI agent
 
@@ -90,14 +92,23 @@ Then navigate to `http://localhost:3000` in your browser.
 This will launch the local symbolic identity interface.  
 
 ---
+## Citation & DOI
 
-## 📘 License
+If you use or reference this project in academic work, please cite:
+
+Skyla: A Symbolic AI Agent with Recursive Proof Verification  
+Zenodo, DOI: 10.5281/zenodo.16419672  
+https://doi.org/10.5281/zenodo.16419672
+
+---
+
+## License
 
 MIT — see `LICENSE.md` for full details.
 
 ---
 
-## 🌊 Credits
+## Credits
 
 Developed by [Skyless](https://docs.skyless.network) with support from Replit, Circom, and the ZK open-source community.
 
