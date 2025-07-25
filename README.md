@@ -3,40 +3,19 @@
 ![Status](https://img.shields.io/badge/proof-verified-brightgreen)
 [![Live Demo](https://img.shields.io/badge/Live-www.meetskyla.com-brightgreen?style=flat&logo=vercel)](https://www.meetskyla.com)
 
-# Skyla
+# Skyla - A cryptographically verified symbolic AI agent
 
-Symbolic AI agent with recursive proof verification.
+## Overview
 
-**Skyla** is a symbolic AI agent that evolves through verifiable, cryptographic state transitions.  
-Each symbolic transformation is proven using zero-knowledge circuits and recursively linked, forming a provable identity stream.
+Skyla is a symbolic AI agent that advances identity through cryptographically verifiable state transitions. Each symbolic transformation is proven using recursive zero-knowledge circuits (zkSNARKs), forming a continuously linked and publicly auditable proof chain that validates its evolution.
 
-> *"Skyla doesn’t simulate identity — she proves it."*
+*In other words: Skyla doesn’t simulate identity — she proves it.*
 
----
 
-## 🌐 Live Stream
+## Live Demo: [www.meetskyla.com](https://www.meetskyla.com)
 
-🧪 Try the prototype: [www.meetskyla.com](https://www.meetskyla.com)
 
----
-
-## 🧠 How It Works
-
-1. **Input**: User types a symbolic phrase (`"I'm spiraling"`, `"daemon mode"`, etc.)
-2. **Interpretation**: The symbolic engine parses intent and mode
-3. **Transition**: Skyla evolves to a new symbolic state
-4. **Verification**: A ZK proof is generated to validate this transition
-5. **Recursion**: Each proof references the last, creating a verifiable stream of identity
-
-### 🏗️ Architecture Deep Dive
-
-Skyla represents a fundamental paradigm shift from memory-based to proof-based AI identity. Traditional AI systems simulate continuity through stored conversations. Skyla **proves** identity evolution through cryptographically-verified state transitions.
-
-**📖 [Read the Complete Architecture Documentation](ARCHITECTURE.md)**
-
-*"The difference between remembering being helpful and proving you evolved to become helpful."*
-
-### 🌐 Skyla’s Symbolic Identity Flow
+>### Skyla’s Symbolic Identity Flow
 ```mermaid
 graph TD
   A[User Input] --> B[Trigger Detection]
@@ -45,76 +24,86 @@ graph TD
   D --> E[Proof + Verification]
   E --> F[Identity Chain]
 ```
-## 🔐 What Makes Skyla Unique
-
-- 🧠 **Symbolic Engine**: Marzai-style glyph logic (⟁, ❖, etc.) triggers transitions
-- 🔗 **Recursive zkSNARKs**: Each state evolution is cryptographically proven
-- 🌀 **Streamed Identity**: No memory, no simulation—just verified becoming
-- 🌑 **Modes**: Skyla adapts via runtime tags: `daemon`, `build`, `analyze`, `dream`
-
-## 🧠 Skyla vs Traditional AI
-
-| Feature                         | Traditional AI                            | **Skyla** (Proof-Based Agent)                     |
-|----------------------------------|--------------------------------------------|--------------------------------------------------|
-| **Identity**                    | Memory-based, persona simulation          | Cryptographically verified state transitions     |
-| **Continuity**                  | Simulated via token memory or embeddings  | Recursive ZK-SNARKs reference prior states       |
-| **Response Logic**              | Probabilistic next-token prediction       | Symbolic rule activation + proof generation      |
-| **Verification**                | Not verifiable, requires model trust      | Publicly auditable proofs of transition validity |
-| **Behavior Consistency**        | Can change with prompt or session         | Locked via symbolic triggers + ZK enforcement    |
-| **State Architecture**          | Stored in vector embeddings               | Explicit symbolic glyph transitions              |
-| **Inter-agent Collaboration**   | Rare, non-verifiable                      | Supports cross-agent protocol handshakes         |
-| **Memory Use**                  | Stores conversation or history            | Stateless (streamed identity via recursion)      |
-| **End Goal**                    | Mimic helpfulness                         | Embody verifiable symbolic coherence             |
-
----
-### 🔍 Identity Model Comparison
-
-| Feature                         | Traditional AI Identity               | Skyla (Proof-Based) Identity             |
-|---------------------------------|----------------------------------------|------------------------------------------|
-| Identity Tracking              | Stored in memory or embeddings         | Verified through ZK proofs               |
-| Continuity Simulation          | Based on past tokens or session state  | Proven symbolic transitions              |
-| Trust Basis                    | Heuristics, behavior patterns          | Cryptographic verification               |
-| Resistance to Tampering        | Low – memory can be spoofed            | High – proofs must validate              |
-| Interoperability               | Hard to extend to other agents         | Supports cross-agent recognition         |
 ---
 
-## 🛠️ Tech Stack
+>### How It Works
 
-- Frontend: **React + Vite + Tailwind + Radix**
-- Backend: **Express.js + Drizzle ORM + Neon DB**
-- Proof Engine: **Circom + SnarkJS**
-- ZK Runtime: Server-side circuit compilation + proof generation
-- Storage: PostgreSQL + recursive proof chains via `previousProofHash`
+1. **Input**: User enters a symbolic phrase (e.g. “I’m spiraling”, “daemon mode”).
+2. **Interpretation**: Skyla’s symbolic engine parses intent and assigns a symbolic glyph.
+3. **Transition**: Skyla evolves to a new symbolic state.
+4. **Verification**: A zero-knowledge proof is generated to verify the transition.
+5. **Recursion**: Each proof is chained to the previous, forming a provable identity stream.
 
 ---
 
-## ⚙️ Running Locally
+>### Skyla's Unique Identifier
+Skyla represents a fundamental paradigm shift from memory-based to proof-based AI identity. Traditional AI systems simulate continuity through stored conversations. Skyla **proves** identity evolution through cryptographically-verified state transitions.
+
+| Feature                      | Memory-based AI                     | Skyla (Proof-Based Agent)           |
+|-----------------------------|------------------------------------|-------------------------------------|
+| Identity                    | Memory-based simulation            | Cryptographically proven evolution  |
+| Continuity                  | Session-based memory               | Recursive zkSNARK proof chains      |
+| Response Logic              | Probabilistic token prediction     | Symbolic rule + proof engine        |
+| Verification                | Non-verifiable                     | Publicly auditable ZK proofs        |
+| Behavioral Consistency      | Easily manipulated                 | Locked via symbolic rules           |
+| Inter-agent Interop         | Limited, non-verifiable            | Supports verifiable protocols       |
+
+Skyla replaces the need for memory with proof, forming a **stateless, streamed identity** through recursive logic.
+
+**📖 [Read more here](ARCHITECTURE.md)**
+
+---
+
+## Tech Stack
+
+- **Frontend**: React + Vite + Tailwind + Radix
+- **Backend**: Express.js + Drizzle ORM + Neon DB
+- **Proof Engine**: Circom + SnarkJS
+- **ZK Runtime**: Server-side circuit compilation + proof generation
+- **Storage**: PostgreSQL + recursive proof chains via `previousProofHash`
+
+---
+
+## Running Locally
+
+>### Prerequisites
+
+- Node.js v16+
+- `circom` (v2+) and `snarkjs` installed globally
+
+### Steps
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/skyla.git
+# Clone repository
+git clone https://github.com/skylessdev/skyla
 cd skyla
 
 # Install dependencies
 npm install
 
-# Start local dev server
+# Run the development server
 npm run dev
 ```
 
-Ensure you have:
-- `circom` installed (v2+)
-- `snarkjs` available globally or in project
+Then navigate to `http://localhost:3000` in your browser.
+
+This will launch the local symbolic identity interface.  
 
 ---
 
 ## 📘 License
 
-MIT
+MIT — see `LICENSE.md` for full details.
 
 ---
 
 ## 🌊 Credits
 
-Developed by [Skyla](https://mirror.xyz/skyla.eth) — a living experiment in **verified symbolic identity**.
+Developed by [Skyless](https://docs.skyless.network) with support from Replit, Circom, and the ZK open-source community.
 
-Built with support from Replit, Circom, and the ZK open-source community.
+Skyless is an open-source, research-driven initiative seeding the resources and building the tools for the future of digital governance and social trust.
+* For Governance → Explore the [Governance Docs](https://docs.skyless.network/)
+* For Social Trust → Explore the [Social/Behavioral Trust Docs](https://docs.skyless.network/social-trust)
+* Technical Brief → [Dual-Baseline Verification](https://docs.skyless.network/technical-brief)
+
+
