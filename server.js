@@ -18,7 +18,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => res.render("index"));
 app.get("/demo", (req, res) => res.render("demo"));
 app.get("/docs", (req, res) => res.render("docs"));
-app.get("/sign-in", (req, res) => res.render("sign-in"));
 app.use((_, res) => res.render("index"));
 
 app.listen(PORT, () => console.log(`Skyla site running on http://localhost:${PORT}`));
