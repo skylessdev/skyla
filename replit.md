@@ -9,15 +9,16 @@ Preferred communication style: Simple, everyday language.
 # System Architecture
 
 ## Frontend Architecture
-- **Static File Serving**: All frontend assets are served from the `public/` directory using Express static middleware
-- **Single-Page Design**: Each route serves a separate HTML file with inline CSS and JavaScript, avoiding external dependencies
+- **EJS Template Engine**: All pages use EJS templates with shared header partial for consistent navigation
+- **Static Asset Serving**: CSS, images, and other assets served from the `public/` directory using Express static middleware
 - **Responsive Layout**: Clean, minimal design with a consistent beige (#f5f4f0) background and dark text (#1a1a1a)
 - **Console Interface**: Interactive demo page featuring a terminal-style UI with real-time state transitions and logging
 
 ## Backend Architecture
-- **Express.js Server**: Lightweight Node.js server using ES modules for routing and static file serving
+- **Express.js Server**: Lightweight Node.js server using ES modules with EJS view engine
+- **EJS View Engine**: Template-based rendering system with shared partials for maintainable header design
 - **Route-Based Navigation**: Clean URL structure without file extensions (/demo, /docs, /sign-in)
-- **File-Based Routing**: Direct mapping between routes and HTML files in the public directory
+- **Template Routing**: Routes render EJS templates from the views directory with shared header partial
 - **404 Fallback**: All unmatched routes redirect to the homepage for graceful error handling
 
 ## Design System
@@ -36,7 +37,8 @@ Preferred communication style: Simple, everyday language.
 # External Dependencies
 
 ## Runtime Dependencies
-- **Express.js (^4.21.2)**: Web server framework for Node.js, handles routing and static file serving
+- **Express.js (^4.21.2)**: Web server framework for Node.js, handles routing and template rendering
+- **EJS (^3.1.9)**: Embedded JavaScript templating engine for dynamic HTML generation
 
 ## Development Stack
 - **Node.js**: JavaScript runtime environment using ES modules
