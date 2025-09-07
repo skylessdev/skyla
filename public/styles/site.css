@@ -1,19 +1,28 @@
 /* site header */
 .site-header{background:#f5f4f0;max-width:1200px;margin:0 auto;padding:24px 20px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.brand-logo{height:32px;width:auto;display:block;vertical-align:middle}
+.site-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .site-nav{display:flex;align-items:center;gap:32px}
 .site-nav a{font-size:15px;font-weight:450;opacity:.9;color:#171717;text-decoration:none}
 .site-nav a:hover{opacity:1}
-
-/* normalize spacing after header */
-.site-header + main,
-.site-header + .page,
-.site-header + section { margin-top:0 !important; padding-top:0 !important; }
 
 /* mobile */
 @media (max-width:640px){
   .site-header{padding:20px 16px}
   .site-nav{gap:24px}
-  .brand-logo{height:28px}
+}
+
+/* header size & spacing (uniform across all pages) */
+.site-header { padding: 24px 20px; margin: 0; }
+
+/* logo sizing */
+.brand-logo { height: 36px; width: auto; display: block; }
+@media (max-width: 640px) { .brand-logo { height: 30px; } }
+
+/* kill stray top gaps directly after header */
+.site-header + * { margin-top: 0 !important; padding-top: 0 !important; }
+
+/* just in case a page-level wrapper tries to push down content */
+main.auth, .page, .container, .content, .auth-wrapper {
+  margin-top: 0 !important; padding-top: 0 !important;
 }
