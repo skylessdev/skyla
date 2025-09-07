@@ -13,8 +13,8 @@
 }
 
 /* Header logo sizing (bigger) */
-.brand-logo { height: 50px; width: auto; display: block; }
-@media (max-width: 640px) { .brand-logo { height: 42px; } }
+.brand-logo { height: 70px; width: auto; display: block; }
+@media (max-width: 640px) { .brand-logo { height: 56px; } }
 
 /* Keep header spacing consistent; kill accidental gaps on the next section */
 .site-header + * { margin-top: 0; padding-top: 0; }
