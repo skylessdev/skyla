@@ -1,3 +1,9 @@
+Short answer: it’s not meant to be “recursive.” What you’re seeing is two code blocks inside the Proof card (a small snippet near the diagram and the large one at the bottom). If you want a single code block (which matches the mock), use the trimmed SVG below.
+
+Replace the SVG (one code block only)
+
+Overwrite public/assets/proof-card.svg with this version—no inner header, no mini code snippet, just the diagram + a single code block + the main Verify button:
+
 <!-- public/assets/proof-card.svg -->
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
   <!-- background matches the card; outer card header comes from HTML, not this SVG -->
@@ -37,3 +43,5 @@
           font-size="14">Verify</text>
   </g>
 </svg>
+
+Nothing else needs to change in index.html—the outer “Proof” header and hamburger are part of the HTML card, so you’ll now see one header + one code block, matching the mock.
