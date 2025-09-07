@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyla - Documentation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+    
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #f5f4f0;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .brand-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: #1a1a1a;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .nav-links a:hover {
+      color: #666;
+    }
+    
+    .layout {
+      display: flex;
+      margin-top: 80px;
+      min-height: calc(100vh - 80px);
+    }
+    
+    .sidebar {
+      width: 280px;
+      background: #fff;
+      border-right: 1px solid #e5e5e5;
+      padding: 32px 24px;
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+    
+    .sidebar h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+    
+    .sidebar ul {
+      list-style: none;
+    }
+    
+    .sidebar li {
+      margin-bottom: 8px;
+    }
+    
+    .sidebar a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px 0;
+      display: block;
+      transition: color 0.2s ease;
+    }
+    
+    .sidebar a:hover,
+    .sidebar a.active {
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 32px 48px;
+      max-width: 800px;
+    }
+    
+    .content h1 {
+      font-size: 36px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+    
+    .content h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 48px 0 24px 0;
+      color: #1a1a1a;
+      padding-top: 20px;
+      border-top: 1px solid #e5e5e5;
+    }
+    
+    .content h2:first-of-type {
+      margin-top: 24px;
+      border-top: none;
+      padding-top: 0;
+    }
+    
+    .content h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 32px 0 16px 0;
+      color: #1a1a1a;
+    }
+    
+    .content p {
+      margin-bottom: 16px;
+      color: #333;
+    }
+    
+    .content ul, .content ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+    
+    .content li {
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .code-block {
+      background: #1a1a1a;
+      color: #f5f4f0;
+      padding: 24px;
+      border-radius: 8px;
+      margin: 24px 0;
+      overflow-x: auto;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .docs-image {
+      max-width: 100%;
+      height: auto;
+      margin: 24px 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    
+    .image-placeholder {
+      width: 100%;
+      height: 300px;
+      background: #e5e5e5;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      margin: 24px 0;
+      font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      
+      .content {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+      <img class="brand-logo" src="/assets/skyla-mark.png" alt="Skyla mark" />
+      <span class="brand-text">skyla.dev</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/demo">Demo</a>
+      <a href="/docs">Docs</a>
+      <a href="/sign-in">Sign in</a>
+    </div>
+  </nav>
+  
+  <div class="layout">
+    <div class="sidebar">
+      <h3>Documentation</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#symbolic-imprint">Symbolic imprint</a></li>
+        <li><a href="#state-proofs">State & proofs</a></li>
+        <li><a href="#api">API (alpha)</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    
+    <div class="content">
+      <h1>Documentation</h1>
+      
+      <h2 id="overview">Overview</h2>
+      <p>Skyla is a cryptographically verified symbolic AI agent that provides a logic layer for verifiable agents. It combines symbolic reasoning with zero-knowledge proofs to create transparent, auditable AI behavior.</p>
+      
+      <p>Key features include:</p>
+      <ul>
+        <li>Symbolic state transitions with deterministic semantics</li>
+        <li>Zero-knowledge proof generation for all state changes</li>
+        <li>Verifiable agent behavior and decision processes</li>
+        <li>Cryptographic integrity for agent identity and actions</li>
+      </ul>
+      
+      <h2 id="architecture">Architecture</h2>
+      <p>Skyla's architecture consists of three main layers that work together to provide verifiable symbolic AI:</p>
+      
+      <img class="docs-image" src="/assets/stack.png" alt="Skyla architecture stack" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="image-placeholder" style="display: none;">Architecture Stack Diagram</div>
+      
+      <h3>LLMs - Mind / Collective Imagination</h3>
+      <p>The top layer handles natural language processing and creative reasoning through large language models.</p>
+      
+      <h3>Symbolic AI - DNA / Constitution</h3>
+      <p>The middle layer provides structured reasoning and rule-based processing with symbolic representations.</p>
+      
+      <h3>Zero-Knowledge Proofs - Immune System / Verifiable Boundary</h3>
+      <p>The bottom layer ensures cryptographic verification and maintains system integrity through zero-knowledge proofs.</p>
+      
+      <h2 id="symbolic-imprint">Symbolic imprint</h2>
+      <p>The symbolic imprint defines the core structure of an agent's identity and behavior patterns. It consists of several key components that determine how the agent processes information and makes decisions.</p>
+      
+      <img class="docs-image" src="/assets/symbolic-imprint.png" alt="Symbolic imprint schema" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="image-placeholder" style="display: none;">Symbolic Imprint Schema</div>
+      
+      <h3>Schema Structure</h3>
+      <div class="code-block">{
+  "intentional_stance": "What the AI is trying to do",
+  "meta_awareness": "Whether AI recognizes its own behavior", 
+  "affective_tone": "Emotional valence implied",
+  "symbolic_markers": "[aligned], 'empathy'] guidance",
+  "proof_input": "What is used for verification"
+}</div>
+      
+      <h2 id="state-proofs">State & proofs</h2>
+      <p>Every state transition in Skyla generates a cryptographic proof that can be independently verified. This ensures complete transparency and auditability of agent behavior.</p>
+      
+      <img class="docs-image" src="/assets/identity-recursion.png" alt="Identity recursion and proof sequence" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="image-placeholder" style="display: none;">Identity Recursion Diagram</div>
+      
+      <h3>Proof Envelope Structure</h3>
+      <div class="code-block">{
+  "previousStateHash": "0xabc123...",
+  "currentStateHash": "0xdef456...",
+  "ruleApplied": "symbolic_response_pattern",
+  "inputTrigger": "natural_language_processing",
+  "zkProof": "0x789ghi...",
+  "timestamp": "2024-09-07T12:00:00.000Z",
+  "identityVector": [0.75, 0.62, 0.58, 0.50],
+  "protocolsActive": ["tone_guard", "emotional_stabilizer"]
+}</div>
+      
+      <h2 id="api">API (alpha)</h2>
+      <p>The Skyla API is currently in alpha and provides endpoints for agent interaction and verification.</p>
+      
+      <h3>Process Input</h3>
+      <div class="code-block">POST /api/process
+Content-Type: application/json
+
+{
+  "input": "analyze this data pattern",
+  "context": {
+    "mode": "analytical",
+    "requirements": ["precision", "transparency"]
+  }
+}</div>
+      
+      <h3>Response</h3>
+      <div class="code-block">{
+  "response": "Analysis complete with high confidence",
+  "stateTransition": {
+    "previousVector": [0.50, 0.50, 0.50, 0.50],
+    "currentVector": [0.75, 0.52, 0.58, 0.62],
+    "proof": "0xabc123..."
+  },
+  "verification": {
+    "valid": true,
+    "zkProof": "0xdef456...",
+    "timestamp": "2024-09-07T12:00:00.000Z"
+  }
+}</div>
+      
+      <h2 id="faq">FAQ</h2>
+      
+      <h3>How does symbolic verification work?</h3>
+      <p>Skyla uses a combination of symbolic rules and semantic processing to determine state transitions. Each transition is recorded with a cryptographic proof that can be independently verified.</p>
+      
+      <h3>What makes Skyla different from other AI agents?</h3>
+      <p>Skyla provides cryptographic guarantees about agent behavior through zero-knowledge proofs. Every decision and state change can be verified without revealing sensitive internal information.</p>
+      
+      <h3>Can I audit agent decisions?</h3>
+      <p>Yes, all agent state transitions include proofs that can be independently verified. The symbolic imprint and proof envelopes provide complete transparency into agent reasoning.</p>
+      
+      <h3>Is the system production-ready?</h3>
+      <p>Skyla is currently in alpha development. The core verification mechanisms are functional, but the API and tooling are still being refined for production use.</p>
+    </div>
+  </div>
+  
+  <script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+    
+    // Active section highlighting
+    const sections = document.querySelectorAll('h2[id]');
+    const navLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+    
+    function updateActiveSection() {
+      let currentSection = '';
+      
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 100) {
+          currentSection = section.id;
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + currentSection) {
+          link.classList.add('active');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', updateActiveSection);
+    updateActiveSection();
+  </script>
+</body>
+</html>
