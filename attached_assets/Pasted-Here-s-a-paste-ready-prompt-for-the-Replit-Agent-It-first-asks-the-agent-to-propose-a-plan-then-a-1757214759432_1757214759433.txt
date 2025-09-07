@@ -1,0 +1,68 @@
+Here’s a paste-ready prompt for the Replit Agent. It first asks the agent to propose a plan, then (after your approval) implement v7 exactly as a single-file HTML app.
+
+⸻
+
+Prompt for Replit Agent
+
+You are going to build a minimal, clean “Skyla Console State Transition UI” as a single-file HTML (exactly like my v7). First, propose a step-by-step plan and wait for my approval before making any changes. After I approve, implement.
+
+Goals & scope
+	•	Produce one file: index.html (inline CSS & JS).
+	•	Aesthetic: clean, minimal, beige background #f5f4f0, dark text #1a1a1a, not cyberpunk.
+	•	Functionality: console-style UI showing state transitions with timestamps, log levels, JSON details, and a live “identity vector” display.
+	•	Input field triggers transitions via exact symbolic rules or semantic fallback.
+	•	Include a deterministic calculateSemanticTransition function (regex categories + stable hash fallback).
+	•	No external libs or frameworks.
+
+Deliverables
+	•	index.html containing:
+	•	The exact UI structure from v7: header (logo, title, tagline), console window with header dots + title, scrollable console log body, input section (text + Submit), state info with the identity vector text display.
+	•	The exact styling from v7 (fonts, colors, spacing).
+	•	The JavaScript logic from v7 with:
+	•	currentState (vector [0.5,0.5,0.5,0.5], mode "standard", protocols ["basic_response"], mock stateHash).
+	•	symbolicRules for "spiral", "daemon", "build", "analyze" (with modes, tones, protocols, vectorAdjustment arrays).
+	•	calculateSemanticTransition(input, currentVec) that:
+	•	checks regex categories (stress/focus/analysis/protect/create) to apply small deltas, else
+	•	uses deterministic hash-based micro-deltas in [-0.05, 0.05] range,
+	•	clamps to [0,1].
+	•	addLogLine(level, message, data?) that appends animated log rows with timestamp, level color, message, and syntax-highlighted JSON (string/number/boolean/key styling).
+	•	On submit:
+	•	If exact rule: apply vectorAdjustment, log "symbolic".
+	•	Else: call calculateSemanticTransition, infer dominant dimension and mode/tone heuristics, log "semantic".
+	•	Generate mock proof entry (previous hash, new hash, ruleApplied, inputTrigger, zkProof, ISO timestamp).
+	•	Update currentState and the displayed vector (rounded to 2 decimals).
+	•	Startup logs: “Symbolic engine loaded”, “Identity vector initialized” (logging the state object), “Ready for symbolic input”, and a sanity log of typeof calculateSemanticTransition.
+
+Acceptance criteria (please confirm you will meet these)
+	1.	Single file index.html, no external assets.
+	2.	Visuals match v7: beige background, dark console, Mac-style window dots, monospace font, subdued colors.
+	3.	Typing daemon produces a symbolic path with:
+	•	Vector moves [+0.0, +0.1, -0.05, +0.0] (clamped),
+	•	Mode "daemon", Tone "protective", Protocols ["daemonwatch","system_monitor"],
+	•	Proof log with previousStateHash, currentStateHash, ruleApplied:"daemon_response_pattern", inputTrigger:"daemon_detected", and zkProof.
+	4.	Typing “I’m overwhelmed with work” produces a semantic path:
+	•	Vector delta roughly [+0.05, +0.15, +0.10, -0.02] (stress category),
+	•	Mode inferred by dominant dimension (likely "adaptive"), Tone "empathetic" if emotional delta > 0.1,
+	•	Proof log with ruleApplied:"semantic_adaptation" and inputTrigger:"natural_language_processing".
+	5.	Typing “random tuesday thoughts” hits the deterministic fallback:
+	•	Small, stable adjustments within ±0.05 each time for the same input,
+	•	Proof log present, state vector updated and clamped.
+	6.	Console logs show timestamp, colored level, message, and syntax-highlighted JSON blocks.
+	7.	The Enter key triggers submission.
+	8.	No runtime errors in the browser console.
+
+Plan request (please do this first)
+
+Before you start coding, propose a concise plan:
+	•	File to create/modify (should be just index.html).
+	•	Key steps you’ll take (UI structure, styles, JS functions & flow).
+	•	How you’ll verify each acceptance criterion (manual test steps).
+
+Ask for my approval before you proceed.
+
+After approval: implementation notes
+	•	Please implement exactly as specified, matching v7’s structure & styling.
+	•	Keep code neat and commented at section boundaries (STATE, RULES, HELPERS, CORE FLOW).
+	•	When done, run it in the Replit webview and paste a short test transcript showing symbolic, semantic, and fallback paths.
+
+Do not begin coding until I approve your plan.
