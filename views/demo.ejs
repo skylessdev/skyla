@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skyla - Console Interface</title>
+  <link rel="stylesheet" href="/styles/site.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     /* Use homepage fonts globally on demo */
@@ -180,15 +181,10 @@
   </style>
 </head>
 <body>
+  <%- include('partials/header') %>
   <div class="container">
-    <%- include('partials/header') %>
     
-    <div class="header" style="text-align:center;margin-bottom:40px">
-      <!-- Replace H1 "Skyla" with the provided PNG -->
-      <div style="text-align:center; margin: 0 0 8px;">
-        <img src="/assets/skyla.png" alt="Skyla" style="width:140px; height:auto; display:inline-block;">
-      </div>
-      <!-- keep the existing tagline paragraph under it -->
+    <div class="header" style="text-align:center;margin-bottom:40px;margin-top:40px">
       <p class="tagline" style="font-size:16px;color:#666">Cryptographically verified symbolic AI agent</p>
     </div>
 

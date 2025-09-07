@@ -1,10 +1,13 @@
-:root{--beige:#f5f4f0;--ink:#0f0f0f}
-.site-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:24px 20px;background:var(--beige);max-width:1160px;margin:0 auto
+/* site header */
+.site-header{background:#f5f4f0}
+.site-header .wrap{max-width:1200px;margin:0 auto;padding:24px 20px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{height:28px;width:auto;display:block}
+.nav{display:flex;align-items:center;gap:32px}
+.nav a{font-size:15px;font-weight:450;opacity:.9;color:#171717;text-decoration:none}
+.nav a:hover{opacity:1}
+/* mobile */
+@media (max-width:640px){
+  .site-header .wrap{padding:20px 16px}
+  .nav{gap:24px}
 }
-.site-brand{display:flex;align-items:center;gap:10px}
-.site-brand img{height:28px;width:auto;display:block}
-.site-nav{display:flex;gap:32px}
-.site-nav a{color:var(--ink);text-decoration:none;font-size:15px;font-weight:450;letter-spacing:.01em;opacity:.9}
-.site-nav a:hover{opacity:1}

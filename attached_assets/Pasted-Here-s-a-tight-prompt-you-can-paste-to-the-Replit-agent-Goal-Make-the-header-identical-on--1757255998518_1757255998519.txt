@@ -1,0 +1,56 @@
+Here’s a tight prompt you can paste to the Replit agent:
+
+⸻
+
+Goal: Make the header identical on /, /demo, /docs, /sign-in using the homepage style.
+
+Do this exactly:
+	1.	Shared CSS
+
+	•	Create/overwrite public/styles/site.css with the header rules below.
+
+/* site header */
+.site-header{background:#f5f4f0}
+.site-header .wrap{max-width:1200px;margin:0 auto;padding:24px 20px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{height:28px;width:auto;display:block}
+.nav{display:flex;align-items:center;gap:32px}
+.nav a{font-size:15px;font-weight:450;opacity:.9;color:#171717;text-decoration:none}
+.nav a:hover{opacity:1}
+/* mobile */
+@media (max-width:640px){
+  .site-header .wrap{padding:20px 16px}
+  .nav{gap:24px}
+}
+
+	2.	Shared header partial
+
+	•	Overwrite views/partials/header.ejs with:
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/skyla2.png" alt="Skyla"></a>
+    <nav class="nav">
+      <a href="/demo">Demo</a>
+      <a href="/docs">Docs</a>
+      <a href="/sign-in">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+	3.	Use the partial + CSS on every page
+
+	•	In views/index.ejs, views/demo.ejs, views/docs.ejs, views/sign-in.ejs:
+	•	Ensure <link rel="stylesheet" href="/styles/site.css"> is present in <head>.
+	•	Include the header where the page header belongs: <%- include('partials/header') %>.
+	•	Remove any other header markup and delete any <style> blocks or CSS that target the header/nav (e.g., .site-header, .nav, .brand, header, topnav, etc.).
+
+	4.	Clean-up
+
+	•	Delete leftover logo elements or duplicate nav in page bodies.
+	•	Confirm Express still serves /public static assets.
+
+Acceptance criteria:
+	•	All four routes show the same header spacing, font size/weight, link gap, and logo height as the homepage.
+	•	No inline/header-specific CSS remains in any page template.
+	•	Links: Demo · Docs · Sign in (no underline), darker text, hover slightly stronger via opacity.

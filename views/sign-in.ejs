@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skyla - Sign In</title>
+  <link rel="stylesheet" href="/styles/site.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -12,11 +13,10 @@
       background: #f5f4f0;
       color: #1a1a1a;
       line-height: 1.6;
-      min-height: 100vh;
+      min-height: calc(100vh - 80px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-top: 80px;
     }
     
     .sign-in-card {
@@ -121,6 +121,7 @@
 </head>
 <body>
   <%- include('partials/header') %>
+  <div style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center;">
   
   <div class="sign-in-card">
     <h1>Sign In</h1>
@@ -142,6 +143,7 @@
     <div class="footer-text">
       Don't have an account? <a href="/demo">Try the demo</a>
     </div>
+  </div>
   </div>
   
   <script>
