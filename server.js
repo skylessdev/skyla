@@ -11,12 +11,10 @@ const PORT = process.env.PORT || 5000;
 app.use(express.static(path.join(__dirname, "public")));
 
 // routes
-app.get("/", (_, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
-app.get("/demo", (_, res) => res.sendFile(path.join(__dirname, "public", "demo.html")));
-app.get("/docs", (_, res) => res.sendFile(path.join(__dirname, "public", "docs.html")));
-app.get("/sign-in", (_, res) => res.sendFile(path.join(__dirname, "public", "sign-in.html")));
-
-// 404 fallback
-app.get("*", (_, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/",       (_,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
+app.get("/demo",   (_,res)=>res.sendFile(path.join(__dirname,"public","demo.html")));
+app.get("/docs",   (_,res)=>res.sendFile(path.join(__dirname,"public","docs.html")));
+app.get("/sign-in",(_,res)=>res.sendFile(path.join(__dirname,"public","sign-in.html")));
+app.use((_,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
 
 app.listen(PORT, () => console.log(`Skyla site running on http://localhost:${PORT}`));
