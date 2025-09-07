@@ -117,7 +117,7 @@
 </head>
 <body>
   <%- include('partials/header') %>
-  <div style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center;">
+  <main class="auth" style="margin-top:0;padding-top:0;min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center;">
   
   <div class="sign-in-card">
     <h1>Sign In</h1>
@@ -139,8 +139,7 @@
     <div class="footer-text">
       Don't have an account? <a href="/demo">Try the demo</a>
     </div>
-  </div>
-  </div>
+  </main>
   
   <script>
     document.getElementById('sign-in-form').addEventListener('submit', function(e) {
