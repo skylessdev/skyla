@@ -1,205 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skyla - Design agency, then prove it</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Skyla — The logic layer for verifiable agents</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: #f5f4f0;
-      color: #1a1a1a;
-      line-height: 1.4;
-      min-height: 100vh;
-    }
-    
-    .nav {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      gap: 30px;
-      z-index: 10;
-    }
-    
-    .nav a {
-      color: #1a1a1a;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 16px;
-    }
-    
-    .nav a:hover {
-      color: #666;
-    }
-    
-    .brand {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-    }
-    
-    .brand-text {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 100px 20px 40px;
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 60px;
-      align-items: center;
-      min-height: calc(100vh - 140px);
-    }
-    
-    .hero {
-      padding-right: 40px;
-    }
-    
-    .hero h1 {
-      font-family: Georgia, 'Times New Roman', Times, serif;
-      font-size: 64px;
-      font-weight: 400;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      color: #1a1a1a;
-    }
-    
-    .hero .kicker {
-      font-size: 20px;
-      color: #666;
-      margin-bottom: 40px;
-      font-weight: 400;
-    }
-    
-    .get-started-btn {
-      display: inline-block;
-      padding: 16px 32px;
-      background: #1a1a1a;
-      color: #f5f4f0;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 16px;
-      transition: all 0.2s ease;
-    }
-    
-    .get-started-btn:hover {
-      background: #333;
-    }
-    
-    .proof-card {
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 32px;
-      color: #f5f4f0;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    }
-    
-    .proof-card h2 {
-      font-size: 36px;
-      font-weight: 300;
-      margin-bottom: 24px;
-      color: #f5f4f0;
-    }
-    
-    .proof-image {
-      width: 100%;
-      height: 200px;
-      background-image: url('/assets/proof-hero.png');
-      background-size: cover;
-      background-position: center;
-      border-radius: 12px;
-      margin-bottom: 24px;
-    }
-    
-    .verify-btn {
-      display: inline-block;
-      padding: 12px 24px;
-      border: 2px solid #f5f4f0;
-      color: #f5f4f0;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-    
-    .verify-btn:hover {
-      background: #f5f4f0;
-      color: #1a1a1a;
-    }
-    
-    @media (max-width: 768px) {
-      .container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 80px 20px 40px;
-      }
-      
-      .hero {
-        padding-right: 0;
-      }
-      
-      .hero h1 {
-        font-size: 48px;
-      }
-      
-      .nav {
-        position: relative;
-        top: 0;
-        right: 0;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-      
-      .brand {
-        position: relative;
-        top: 0;
-        left: 0;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-    }
+    :root{--beige:#f5f4f0;--ink:#0f0f0f;--muted:#666;--panel:#111;--panelBorder:#222;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--beige);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;line-height:1.45}
+    .wrap{max-width:1160px;margin:0 auto;padding:24px 20px 72px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+    .brand img{width:28px;height:auto;object-fit:contain;display:block}
+    nav a{color:var(--ink);text-decoration:none;margin-left:24px;font-size:15px}
+    nav a:hover{text-decoration:underline}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:start}
+    .kicker{font-size:16px;color:var(--muted);margin-bottom:12px}
+    h1{font-family:ui-serif,Georgia,serif;font-size:clamp(40px,6.5vw,72px);line-height:1.02;letter-spacing:-.02em;font-weight:600;margin-bottom:18px}
+    .sub{color:var(--muted);font-size:20px;margin-bottom:22px}
+    .cta{display:inline-block;border:1.5px solid var(--ink);padding:12px 18px;border-radius:8px;color:var(--ink);text-decoration:none;font-weight:600;background:transparent}
+    .cta:hover{background:#fff}
+    .card{background:#111;color:#eaeaea;border:1px solid #222;border-radius:14px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+    .card header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .menu{width:16px;height:2px;background:#aaa;border-radius:2px;position:relative}
+    .menu::before,.menu::after{content:"";position:absolute;left:0;width:16px;height:2px;background:#aaa;border-radius:2px}
+    .menu::before{top:-5px}.menu::after{top:5px}
+    .card h3{font-family:ui-serif,Georgia,serif;font-size:22px}
+    .proof{border-top:1px solid #1f1f1f;margin-top:10px;padding-top:12px}
+    .proof img{width:100%;height:auto;display:block;border-radius:8px}
+    .code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;color:#cfd3d7;white-space:pre;line-height:1.35;margin:10px 0 14px}
+    .verify{display:inline-block;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff;border-radius:8px;padding:9px 14px;text-decoration:none;font-size:14px}
+    .verify:hover{background:#242424}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;gap:28px}}
   </style>
 </head>
 <body>
-  <div class="brand">
-    <img class="brand-logo" src="/assets/skyla-mark.png" alt="Skyla mark" />
-    <span class="brand-text">skyla.dev</span>
-  </div>
-  
-  <nav class="nav">
-    <a href="/demo">Demo</a>
-    <a href="/docs">Docs</a>
-    <a href="/sign-in">Sign in</a>
-  </nav>
-  
-  <div class="container">
-    <div class="hero">
-      <h1>Design agency,<br />then prove it.</h1>
-      <p class="kicker">The logic layer for verifiable agents.</p>
-      <a href="/demo" class="get-started-btn">Get started</a>
-    </div>
-    
-    <div class="proof-card">
-      <h2>Proof</h2>
-      <div class="proof-image"></div>
-      <a href="/demo" class="verify-btn">Verify</a>
-    </div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="/assets/skyla-mark.png" alt="Skyla mark"/><span>skyla.dev</span>
+      </div>
+      <nav>
+        <a href="/sign-in">Sign in</a>
+        <a href="/docs">Docs</a>
+      </nav>
+    </header>
+
+    <main class="grid">
+      <section>
+        <div class="kicker">The logic layer for verifiable agents.</div>
+        <h1>Design agency,<br/>then prove it.</h1>
+        <p class="sub">Skyla adds integrity rails to agents: every state transition is checked against policy and emitted with an attestation.</p>
+        <a class="cta" href="/demo">Get started</a>
+      </section>
+
+      <aside class="card" aria-label="Proof panel">
+        <header><div class="menu" aria-hidden="true"></div><h3>Proof</h3><span style="width:16px"></span></header>
+        <div class="proof"><img src="/assets/proof-hero.png" alt="Proof diagram"/></div>
+        <div class="code">mutate
+aurend → align
+axiom  → arise
+assert
+core_invariants()</div>
+        <a class="verify" href="/demo">Verify</a>
+      </aside>
+    </main>
   </div>
 </body>
 </html>
