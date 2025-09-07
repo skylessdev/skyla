@@ -1,0 +1,24 @@
+:root{
+  --beige:#f5f4f0;
+  --ink:#0f0f0f;
+  --muted:#666;
+}
+*{box-sizing:border-box}
+header.site{
+  background:var(--beige);
+  padding:18px 20px;
+}
+.header-inner{
+  max-width:1160px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{
+  font-weight:700; letter-spacing:.1px; color:var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+.nav a{
+  text-decoration:none; color:var(--ink);
+  font-size:16px; margin-left:28px;
+  font-weight:500; /* lighter weight to match homepage */
+}
+.nav a:hover{ text-decoration:underline; }
