@@ -1,0 +1,42 @@
+<!-- public/assets/proof-card.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="420" viewBox="0 0 600 420">
+  <rect x="0" y="0" width="600" height="420" rx="14" fill="#111"/>
+  <rect x="16" y="56" width="568" height="1" fill="#222"/>
+  <!-- menu icon -->
+  <rect x="28" y="28" width="22" height="2" fill="#aaa"/>
+  <rect x="28" y="34" width="22" height="2" fill="#aaa"/>
+  <rect x="28" y="40" width="22" height="2" fill="#aaa"/>
+  <!-- title -->
+  <text x="40" y="100" fill="#eaeaea" font-family="Georgia, ui-serif, serif" font-size="38" font-weight="600">Proof</text>
+
+  <!-- diamonds + arrows row -->
+  <g transform="translate(40, 140)" fill="none" stroke="#eaeaea" stroke-width="3">
+    <polygon points="0,22 22,0 44,22 22,44"/>
+    <line x1="56" y1="22" x2="96" y2="22" stroke="#eaeaea" stroke-width="2"/>
+    <polygon transform="translate(108,0)" points="0,22 22,0 44,22 22,44"/>
+    <line x1="164" y1="22" x2="204" y2="22" stroke="#eaeaea" stroke-width="2"/>
+    <polygon transform="translate(216,0)" points="0,22 22,0 44,22 22,44"/>
+  </g>
+
+  <!-- down arrow to square -->
+  <g transform="translate(300, 140)" stroke="#eaeaea" fill="none" stroke-width="2">
+    <line x1="0" y1="60" x2="0" y2="130"/>
+    <polyline points="-6,124 0,136 6,124"/>
+    <rect x="-18" y="140" width="36" height="36" />
+  </g>
+
+  <!-- code area -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#cfd3d7">
+    <text x="40" y="260">mutate</text>
+    <text x="40" y="288">aurend → align</text>
+    <text x="40" y="316">axiom  → arise</text>
+    <text x="40" y="344">assert</text>
+    <text x="40" y="372">core_invariants()</text>
+  </g>
+
+  <!-- Verify button -->
+  <g transform="translate(40, 384)">
+    <rect width="84" height="32" rx="8" fill="#1a1a1a" stroke="#2a2a2a"/>
+    <text x="42" y="22" text-anchor="middle" fill="#ffffff" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial" font-size="14">Verify</text>
+  </g>
+</svg>
