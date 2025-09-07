@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyla - Console Interface</title>
+  <link rel="stylesheet" href="/styles/site.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* Use homepage fonts globally on demo */
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+    
+    /* Keep the dark console panel monospace only inside it */
+    .console, .console *{
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+    .header { text-align: center; margin-bottom: 40px; }
+    h1 {
+      font-size: 48px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .tagline {
+      font-size: 18px;
+      color: #666;
+      font-weight: 400;
+    }
+    .console {
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .console-header {
+      background: #333;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .console-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27ca3f; }
+    .console-title {
+      color: #ccc;
+      font-size: 14px;
+      margin-left: 8px;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .console-body {
+      padding: 20px;
+      color: #fff;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 14px;
+      line-height: 1.4;
+      background: #1a1a1a;
+      min-height: 400px;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+    .log-line {
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .timestamp {
+      color: #666;
+      font-size: 12px;
+      min-width: 70px;
+    }
+    .log-level {
+      font-weight: bold;
+      min-width: 50px;
+      font-size: 12px;
+    }
+    .log-level.info { color: #4CAF50; }
+    .log-level.warn { color: #FF9800; }
+    .log-level.debug { color: #2196F3; }
+    .log-level.state { color: #9C27B0; }
+    .log-message {
+      color: #ccc;
+      flex: 1;
+    }
+    .json-object {
+      margin-top: 4px;
+      margin-left: 78px;
+      background: #262626;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      border-left: 3px solid #444;
+      white-space: pre-wrap;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .json-object .key { color: #61DAFB; }
+    .json-object .string { color: #98C379; }
+    .json-object .number { color: #D19A66; }
+    .json-object .boolean { color: #C678DD; }
+    .input-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      background: #f9f9f9;
+      transition: all 0.2s ease;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #1a1a1a;
+      background: #fff;
+    }
+    button {
+      padding: 12px 24px;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    button:hover {
+      background: #333;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .state-info {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .current-state {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .vector-display {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 18px;
+      color: #1a1a1a;
+      background: #f5f4f0;
+      padding: 12px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <%- include('partials/header') %>
+    
+    <div class="header" style="text-align:center;margin-bottom:40px">
+      <!-- Replace H1 "Skyla" with the provided PNG -->
+      <div style="text-align:center; margin: 0 0 8px;">
+        <img src="/assets/skyla.png" alt="Skyla" style="width:140px; height:auto; display:inline-block;">
+      </div>
+      <!-- keep the existing tagline paragraph under it -->
+      <p class="tagline" style="font-size:16px;color:#666">Cryptographically verified symbolic AI agent</p>
+    </div>
+
+    <div class="console">
+      <div class="console-header">
+        <div class="console-dot dot-red"></div>
+        <div class="console-dot dot-yellow"></div>
+        <div class="console-dot dot-green"></div>
+        <div class="console-title">skyla.console</div>
+      </div>
+      <div class="console-body" id="console-body">
+      </div>
+    </div>
+
+    <div class="input-section">
+      <div class="input-group">
+        <input type="text" id="user-input" placeholder="Enter symbolic phrase (e.g., 'spiral', 'daemon', 'build')" />
+        <button onclick="processInput()" id="submit-btn">Submit</button>
+      </div>
+    </div>
+
+    <div class="state-info">
+      <div class="current-state">Current Identity Vector:</div>
+      <div class="vector-display" id="vector-display">[0.50, 0.50, 0.50, 0.50]</div>
+    </div>
+  </div>
+
+  <script>
+    // ------------------ STATE ------------------
+    let currentState = {
+      identityVector: [0.5, 0.5, 0.5, 0.5],
+      mode: "standard",
+      protocols: ["basic_response"],
+      stateHash: "0xabc123"
+    };
+
+    // ------------------ HELPERS ------------------
+    function clamp01(x) {
+      return Math.max(0, Math.min(1, x));
+    }
+
+    function getTimestamp() {
+      return new Date().toLocaleTimeString('en-US', { hour12: false });
+    }
+
+    function generateMockHash() {
+      return "0x" + Math.random().toString(16).substring(2, 10);
+    }
+
+    // ------------------ SEMANTIC FUNCTION (GLOBAL/HOISTED) ------------------
+    function calculateSemanticTransition(input, currentVec) {
+      const text = (input || "").toLowerCase();
+
+      // Category regex matching with exact deltas
+      const categories = [
+        { 
+          keys: [/overwhelm|stress|anxio|panic|burnout|tired/], 
+          delta: [0.05, 0.15, 0.10, -0.02] 
+        },
+        { 
+          keys: [/focus|concentrat|build|ship|execute|implement|deliver/], 
+          delta: [0.12, -0.05, 0.08, 0.10] 
+        },
+        { 
+          keys: [/analy[sz]e|reason|logic|evaluate|precise|assess|measure/], 
+          delta: [0.15, -0.02, 0.05, 0.08] 
+        },
+        { 
+          keys: [/protect|guard|safe|defend|daemon|monitor/], 
+          delta: [0.00, 0.08, -0.03, 0.04] 
+        },
+        { 
+          keys: [/create|design|invent|imag(in|e)|idea|explore|brainstorm|prototype/], 
+          delta: [0.07, 0.06, 0.12, 0.03] 
+        }
+      ];
+
+      // Check categories first
+      for (const cat of categories) {
+        if (cat.keys.some(rx => rx.test(text))) {
+          return currentVec.map((v, i) => clamp01(v + cat.delta[i]));
+        }
+      }
+
+      // Deterministic fallback using hash
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        hash = ((hash << 5) - hash) + text.charCodeAt(i);
+        hash |= 0; // Convert to 32-bit integer
+      }
+
+      const deltas = [0, 1, 2, 3].map(k => {
+        const byte = (hash >> ((k * 8) % 24)) & 0xff;
+        return ((byte / 255) - 0.5) * 0.10; // Maps to [-0.05, 0.05]
+      });
+
+      return currentVec.map((v, i) => clamp01(v + deltas[i]));
+    }
+
+    // Ensure global access
+    window.calculateSemanticTransition = calculateSemanticTransition;
+
+    // ------------------ SYMBOLIC RULES ------------------
+    const symbolicRules = {
+      "spiral": {
+        mode: "adaptive",
+        tone: "analytical", 
+        protocols: ["tone_guard", "emotional_stabilizer"],
+        vectorAdjustment: [0.1, 0.2, 0.3, 0.0]
+      },
+      "daemon": {
+        mode: "daemon",
+        tone: "protective",
+        protocols: ["daemonwatch", "system_monitor"],
+        vectorAdjustment: [0.0, 0.1, -0.05, 0.0]
+      },
+      "build": {
+        mode: "builder",
+        tone: "focused",
+        protocols: ["project_manager", "resource_optimizer"],
+        vectorAdjustment: [0.2, -0.1, 0.1, 0.15]
+      },
+      "analyze": {
+        mode: "analytical",
+        tone: "precise",
+        protocols: ["data_processor", "pattern_detector"],
+        vectorAdjustment: [0.3, 0.0, 0.05, 0.1]
+      }
+    };
+
+    // ------------------ LOGGING SYSTEM ------------------
+    function addLogLine(level, message, data = null) {
+      const consoleBody = document.getElementById('console-body');
+      const logLine = document.createElement('div');
+      logLine.className = 'log-line';
+
+      let content = `
+        <span class="timestamp">${getTimestamp()}</span>
+        <span class="log-level ${level}">${level.toUpperCase()}</span>
+        <span class="log-message">${message}</span>
+      `;
+
+      if (data) {
+        const jsonString = JSON.stringify(data, null, 2)
+          .replace(/"([^"]+)":/g, '<span class="key">"$1":</span>')
+          .replace(/: "([^"]+)"/g, ': <span class="string">"$1"</span>')
+          .replace(/: ([0-9.-]+)/g, ': <span class="number">$1</span>')
+          .replace(/: (true|false)/g, ': <span class="boolean">$1</span>');
+        
+        content += `<div class="json-object">${jsonString}</div>`;
+      }
+
+      logLine.innerHTML = content;
+      consoleBody.appendChild(logLine);
+      consoleBody.scrollTop = consoleBody.scrollHeight;
+    }
+
+    // ------------------ MAIN PROCESSING ------------------
+    function processInput() {
+      const inputElement = document.getElementById('user-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const input = inputElement.value.trim();
+      
+      if (!input) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+
+      addLogLine('info', `Processing input: "${input}"`);
+
+      setTimeout(() => {
+        try {
+          // Check for symbolic rules first
+          const rule = symbolicRules[input.toLowerCase()];
+          let newVector, newMode, newProtocols;
+
+          if (rule) {
+            addLogLine('debug', 'Symbolic rule match found', rule);
+            
+            // Apply rule-based transformation
+            newVector = currentState.identityVector.map((v, i) => 
+              clamp01(v + rule.vectorAdjustment[i])
+            );
+            newMode = rule.mode;
+            newProtocols = rule.protocols;
+          } else {
+            addLogLine('debug', 'No symbolic rule found, using semantic processing');
+            
+            // Use semantic function for vector calculation
+            newVector = window.calculateSemanticTransition(input, currentState.identityVector);
+            newMode = currentState.mode; // Keep current mode
+            newProtocols = currentState.protocols; // Keep current protocols
+          }
+
+          // Update state
+          const previousState = { ...currentState };
+          currentState = {
+            identityVector: newVector,
+            mode: newMode,
+            protocols: newProtocols,
+            stateHash: generateMockHash()
+          };
+
+          addLogLine('state', 'State transition complete', {
+            from: previousState,
+            to: currentState,
+            delta: newVector.map((v, i) => v - previousState.identityVector[i])
+          });
+
+          // Generate proof envelope
+          const proofEnvelope = {
+            input: input,
+            timestamp: new Date().toISOString(),
+            previousHash: previousState.stateHash,
+            newHash: currentState.stateHash,
+            vectorDelta: newVector.map((v, i) => v - previousState.identityVector[i]),
+            mode: newMode,
+            protocols: newProtocols,
+            proof: generateMockHash() // Mock ZK proof
+          };
+
+          addLogLine('info', 'Proof envelope generated', proofEnvelope);
+
+          // Update display
+          document.getElementById('vector-display').textContent = 
+            `[${newVector.map(v => v.toFixed(2)).join(', ')}]`;
+
+        } catch (error) {
+          addLogLine('warn', `Error: ${error.message}`, { error: error.toString() });
+        }
+
+        inputElement.value = '';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+      }, 800);
+    }
+
+    // ------------------ INITIALIZATION ------------------
+    document.addEventListener('DOMContentLoaded', function() {
+      addLogLine('info', 'Skyla console initialized');
+      addLogLine('debug', 'Initial state loaded', currentState);
+      
+      const inputElement = document.getElementById('user-input');
+      inputElement.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          processInput();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
