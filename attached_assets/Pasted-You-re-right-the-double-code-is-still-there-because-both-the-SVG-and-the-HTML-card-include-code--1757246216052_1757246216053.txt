@@ -1,0 +1,57 @@
+You’re right — the “double code” is still there because both the SVG and the HTML card include code text. Let’s make it unambiguous: keep the code in HTML only (so it’s selectable and accessible), and make the SVG diagram-only.
+
+Here’s the precise fix.
+
+1) Replace the SVG with a diagram-only version
+
+Overwrite public/assets/proof-card.svg with this (no code, no button, no inner header):
+
+<!-- public/assets/proof-card.svg  (diagram only) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" viewBox="0 0 600 220">
+  <rect x="0" y="0" width="600" height="220" rx="12" fill="#111"/>
+  <!-- Diamonds + arrows -->
+  <g transform="translate(80, 42)" fill="none" stroke="#eaeaea" stroke-width="3">
+    <polygon points="0,22 22,0 44,22 22,44"/>
+    <line x1="56" y1="22" x2="96" y2="22" stroke-width="2"/>
+    <polygon transform="translate(108,0)" points="0,22 22,0 44,22 22,44"/>
+    <line x1="164" y1="22" x2="204" y2="22" stroke-width="2"/>
+    <polygon transform="translate(216,0)" points="0,22 22,0 44,22 22,44"/>
+  </g>
+  <!-- Down arrow to square -->
+  <g transform="translate(300, 42)" stroke="#eaeaea" fill="none" stroke-width="2">
+    <line x1="0" y1="60" x2="0" y2="130"/>
+    <polyline points="-6,124 0,136 6,124"/>
+    <rect x="-18" y="142" width="36" height="36"/>
+  </g>
+</svg>
+
+2) Ensure HTML shows the only code block
+
+Open public/index.html and keep the code text here (this stays exactly once). Also add a cache-bust query to force the new SVG to load.
+
+Find the Proof card section and make sure it looks like this:
+
+<aside class="card" aria-label="Proof panel">
+  <header>
+    <div class="menuline" aria-hidden="true"></div>
+    <h3>Proof</h3>
+    <div style="width:16px"></div>
+  </header>
+
+  <div class="proof-diagram">
+    <!-- cache-bust so the browser picks up the new SVG -->
+    <img src="/assets/proof-card.svg?v=3" alt="Proof flow diagram"/>
+  </div>
+
+  <!-- This is the ONLY code block now -->
+  <div class="code">
+mutate
+aurend → align
+axiom  → arise
+assert
+core_invariants()</div>
+
+  <a class="verify" href="/demo">Verify</a>
+</aside>
+
+If you still see two blocks after saving, hard-refresh: Cmd/Ctrl+Shift+R (or add ?v=3 to the page URL once).

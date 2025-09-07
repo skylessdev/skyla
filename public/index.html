@@ -27,7 +27,7 @@
     .menu::before{top:-5px}.menu::after{top:5px}
     .card h3{font-family:ui-serif,Georgia,serif;font-size:22px}
     .proof{border-top:1px solid #1f1f1f;margin-top:10px;padding-top:12px}
-    .proof img{width:100%;height:auto;display:block;border-radius:10px}
+    .proof-diagram img{width:100%;height:auto;display:block;border-radius:10px}
     .code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;color:#cfd3d7;white-space:pre;line-height:1.35;margin:10px 0 14px}
     .verify{display:inline-block;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff;border-radius:8px;padding:9px 14px;text-decoration:none;font-size:14px}
     .verify:hover{background:#242424}
@@ -56,8 +56,8 @@
       </section>
 
       <aside class="card" aria-label="Proof panel">
-        <header><div class="menu" aria-hidden="true"></div><h3>Proof</h3><span style="width:16px"></span></header>
-        <div class="proof"><img src="/assets/proof-card.svg" alt="Proof diagram"/></div>
+        <header><div class="menu" aria-hidden="true"></div><h3>Proof</h3><div style="width:16px"></div></header>
+        <div class="proof-diagram"><img src="/assets/proof-card.svg?v=3" alt="Proof flow diagram"/></div>
         <div class="code">mutate
 aurend → align
 axiom  → arise
