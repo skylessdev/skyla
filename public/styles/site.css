@@ -1,0 +1,40 @@
+/* public/styles/site.css */
+:root{
+  --beige:#f5f4f0; --ink:#0f0f0f;
+}
+
+/* Unified header for every page */
+.site-header{
+  background: var(--beige);
+  padding: 24px 20px;                 /* generous top/bottom like the "arrow" screenshot */
+}
+.site-header .inner{
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* Brand logo */
+.brand{ display:flex; align-items:center; text-decoration:none; }
+.brand img{ height:28px; width:auto; display:block; }
+
+/* Nav links — lighter/smaller + more breathing room */
+nav.site-nav{ display:flex; align-items:center; gap:32px; }
+nav.site-nav a{
+  text-decoration:none;
+  color: var(--ink);
+  font-size: 15px;            /* smaller */
+  font-weight: 450;           /* lighter */
+  letter-spacing: .01em;
+  opacity: .9;
+}
+nav.site-nav a:hover{ opacity:1; text-decoration:underline; }
+
+@media (max-width: 720px){
+  .site-header{ padding: 18px 16px; }
+  nav.site-nav{ gap:22px; }
+  nav.site-nav a{ font-size:14.5px; }
+}

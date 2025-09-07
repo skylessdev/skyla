@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skyla - Console Interface</title>
-  <link rel="stylesheet" href="/styles/header.css">
+  <link rel="stylesheet" href="/styles/site.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     /* Use homepage fonts globally on demo */
@@ -192,11 +192,13 @@
 </head>
 <body>
   <div class="container">
-    <header class="site">
-      <div class="header-inner">
-        <div class="brand">skyla.dev</div>
-        <nav class="nav">
-          <a href="/">Home</a>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/">
+          <img src="/assets/skyla2.png" alt="Skyla" height="28">
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="/demo">Demo</a>
           <a href="/docs">Docs</a>
           <a href="/sign-in">Sign in</a>
         </nav>

@@ -1,0 +1,101 @@
+Awesome—approved. Here’s a single copy-paste prompt for your Replit Agent to implement exactly the header you want (airier spacing, lighter nav, and the new PNG logo), with a quick plan-first then execute.
+
+⸻
+
+Replit Agent Prompt
+
+I want the header on all pages to match the preferred homepage screenshot (the one I marked with the arrow).
+Key traits: logo image (skyla2.png) on the left, airier spacing, and lighter/smaller nav links on the right.
+
+Please reply with a short plan first
+	•	Files you’ll touch
+	•	Exact CSS values you’ll apply (padding, gaps, font-size, font-weight)
+	•	Then wait for my “Approved” to proceed.
+
+After approval, implement these exact changes
+
+Files to modify / create
+	•	public/assets/skyla2.png  (use my uploaded file name exactly)
+	•	public/styles/site.css    (new shared stylesheet)
+	•	public/index.html
+	•	public/demo.html
+	•	public/docs.html
+	•	public/sign-in.html
+
+1) Create shared stylesheet public/styles/site.css with the header styles below (this restores the airy spacing + lighter nav I want):
+
+/* public/styles/site.css */
+:root{
+  --beige:#f5f4f0; --ink:#0f0f0f;
+}
+
+/* Unified header for every page */
+.site-header{
+  background: var(--beige);
+  padding: 24px 20px;                 /* generous top/bottom like the “arrow” screenshot */
+}
+.site-header .inner{
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* Brand logo */
+.brand{ display:flex; align-items:center; text-decoration:none; }
+.brand img{ height:28px; width:auto; display:block; }
+
+/* Nav links — lighter/smaller + more breathing room */
+nav.site-nav{ display:flex; align-items:center; gap:32px; }
+nav.site-nav a{
+  text-decoration:none;
+  color: var(--ink);
+  font-size: 15px;            /* smaller */
+  font-weight: 450;           /* lighter */
+  letter-spacing: .01em;
+  opacity: .9;
+}
+nav.site-nav a:hover{ opacity:1; text-decoration:underline; }
+
+@media (max-width: 720px){
+  .site-header{ padding: 18px 16px; }
+  nav.site-nav{ gap:22px; }
+  nav.site-nav a{ font-size:14.5px; }
+}
+
+2) Replace the header markup on ALL four pages with this exact block:
+
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="/">
+      <img src="/assets/skyla2.png" alt="Skyla" height="28">
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/demo">Demo</a>
+      <a href="/docs">Docs</a>
+      <a href="/sign-in">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+3) Add stylesheet link to each page (inside <head>):
+
+<link rel="stylesheet" href="/styles/site.css">
+
+4) Clean-up
+	•	Remove any previous header-specific CSS files/blocks that conflict with the new header.
+	•	Remove any remaining text wordmarks like skyla.dev or any other logo images from headers.
+
+5) Constraints
+	•	Do not change the console panel fonts/looks in /demo beyond the header.
+	•	Keep all other content intact.
+
+6) QA checklist (complete before finishing)
+	•	/, /demo, /docs, /sign-in all show the same header: logo (skyla2.png) left, Demo · Docs · Sign in right.
+	•	Spacing is airy (24px top/bottom), nav links are 15px / 450 weight / 32px gap.
+	•	No stray logos or “skyla.dev” text remain in headers.
+	•	Console body on /demo remains unchanged.
+
+⸻

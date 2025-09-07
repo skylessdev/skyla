@@ -1,0 +1,127 @@
+Here’s a copy-paste prompt for your Replit Agent to implement the header tweak exactly as you described. It tells the agent to present a plan first, then (after your approval) make the edits.
+
+⸻
+
+Prompt for Replit Agent
+
+You are updating an existing Node/Express static site with pages at /, /demo, /docs, and /sign-in.
+
+Objective
+
+Adopt the homepage header look/spacing across all pages, but:
+	•	Use the new brand PNG: public/assets/skyla2.png (provided) instead of the text wordmark.
+	•	Restore the old, airier spacing and lighter/smaller nav link styling (as in the earlier homepage version I liked).
+	•	Keep the same nav links on all pages: Demo · Docs · Sign in.
+
+Please propose a plan first
+
+Before changing files, reply with a short plan (bulleted), the files you will touch, and the CSS values you intend for:
+	•	header padding (top/bottom),
+	•	brand logo size,
+	•	nav link font-size, font-weight, letter-spacing, gap.
+
+Wait for my approval, then implement.
+
+⸻
+
+Implementation details (do this after I approve)
+
+1) Assets
+	•	Ensure public/assets/skyla2.png exists (use my uploaded file; keep file name skyla2.png).
+
+2) Shared CSS (create)
+
+Create public/styles/site.css and add the header styles below. These restore the lighter/smaller links and bigger breathing room I want:
+
+/* public/styles/site.css */
+:root{
+  --beige:#f5f4f0;
+  --ink:#0f0f0f;
+  --muted:#666;
+}
+
+/* Unified site header */
+.site-header{
+  background: var(--beige);
+  padding: 22px 20px;               /* airy top/bottom like the earlier version */
+  border: 0;
+}
+.site-header .inner{
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand{
+  display:flex; align-items:center; gap:12px;
+  text-decoration:none; color:var(--ink);
+}
+.brand img{
+  height: 28px;                     /* crisp, not overpowering */
+  width: auto; display:block;
+}
+nav.site-nav{
+  display:flex; align-items:center; gap: 28px;   /* more breathing room between links */
+}
+nav.site-nav a{
+  text-decoration:none;
+  color: var(--ink);
+  font-size: 15px;                  /* slightly smaller than current */
+  font-weight: 450;                 /* lighter than current; adjust to 400 if needed */
+  letter-spacing: .01em;
+  opacity: .95;
+}
+nav.site-nav a:hover{ opacity: 1; text-decoration: underline; }
+
+@media (max-width: 720px){
+  .site-header{ padding: 18px 16px; }
+  nav.site-nav{ gap: 20px; }
+  nav.site-nav a{ font-size: 14.5px; }
+}
+
+3) Shared header markup (replace on all four pages)
+
+Replace each page’s existing header with the following exact HTML block:
+
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="/">
+      <img src="/assets/skyla2.png" alt="Skyla" width="auto" height="28" />
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/demo">Demo</a>
+      <a href="/docs">Docs</a>
+      <a href="/sign-in">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+4) Include the stylesheet on every page
+
+In public/index.html, public/demo.html, public/docs.html, and public/sign-in.html, add this <link> inside <head> (or replace any prior header CSS block for the header with this external file):
+
+<link rel="stylesheet" href="/styles/site.css">
+
+5) Demo page specifics
+	•	Keep all the console panel fonts as-is.
+	•	Only the page header adopts the CSS above (no serif changes to the console).
+
+6) Remove leftover text wordmarks/logos
+	•	Remove any remaining skyla.dev text wordmark inside headers on all pages and any previous <img> or CSS-drawn marks that were used for branding in the header.
+
+7) QA checklist
+	•	All four routes load with the same header.
+	•	The left brand uses skyla2.png (height ~28px, no distortion).
+	•	Nav links are lighter/smaller with more gap (as specified).
+	•	No extra logos or text wordmarks remain in the header.
+	•	Console page body (below header) remains unchanged.
+
+⸻
+
+Notes
+	•	Do not modify server.js routes.
+	•	Keep all other page content intact.
+
+When you’re ready, show me the plan with the exact values you will apply, then I’ll approve and you can implement.
