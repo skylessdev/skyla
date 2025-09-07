@@ -14,34 +14,26 @@
     }
     .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
     .header { text-align: center; margin-bottom: 40px; }
-    .logo {
+    .logo-img {
       width: 80px;
       height: 80px;
       margin: 0 auto 20px;
-      background: #1a1a1a;
-      border-radius: 20px;
+      display: block;
+    }
+    .nav {
+      position: absolute;
+      top: 20px;
+      right: 20px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
+      gap: 20px;
     }
-    .logo::before {
-      content: '';
-      width: 40px;
-      height: 40px;
-      border: 3px solid #f5f4f0;
-      border-radius: 4px;
-      position: absolute;
-      background: transparent;
+    .nav a {
+      color: #1a1a1a;
+      text-decoration: none;
+      font-weight: 500;
     }
-    .logo::after {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: #f5f4f0;
-      border-radius: 50%;
-      position: absolute;
-      top: 15px;
+    .nav a:hover {
+      color: #666;
     }
     h1 {
       font-size: 48px;
@@ -202,9 +194,16 @@
   </style>
 </head>
 <body>
+  <nav class="nav">
+    <a href="/">Home</a>
+    <a href="/demo">Demo</a>
+    <a href="/docs">Docs</a>
+    <a href="/sign-in">Sign in</a>
+  </nav>
+  
   <div class="container">
     <div class="header">
-      <div class="logo"></div>
+      <img class="logo-img" src="/assets/skyla-mark.png" alt="Skyla mark" />
       <h1>Skyla</h1>
       <p class="tagline">Cryptographically verified symbolic AI agent</p>
     </div>
