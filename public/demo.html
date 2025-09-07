@@ -4,13 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skyla - Console Interface</title>
+  <link rel="stylesheet" href="/styles/header.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    /* Use homepage fonts globally on demo */
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background: #f5f4f0;
       color: #1a1a1a;
       line-height: 1.4;
+    }
+    
+    /* Keep the dark console panel monospace only inside it */
+    .console, .console *{
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
     }
     .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
     .header { text-align: center; margin-bottom: 40px; }
@@ -185,20 +192,23 @@
 </head>
 <body>
   <div class="container">
-    <header class="s-header">
-      <div class="s-brand">
-        <i class="s-brand__dot" aria-hidden="true"></i>
-        <span>skyla.dev</span>
+    <header class="site">
+      <div class="header-inner">
+        <div class="brand">skyla.dev</div>
+        <nav class="nav">
+          <a href="/">Home</a>
+          <a href="/docs">Docs</a>
+          <a href="/sign-in">Sign in</a>
+        </nav>
       </div>
-      <nav class="s-nav">
-        <a href="/demo">Demo</a>
-        <a href="/docs">Docs</a>
-        <a href="/sign-in">Sign in</a>
-      </nav>
     </header>
     
     <div class="header" style="text-align:center;margin-bottom:40px">
-      <h1 style="font-size:40px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px">Skyla</h1>
+      <!-- Replace H1 "Skyla" with the provided PNG -->
+      <div style="text-align:center; margin: 0 0 8px;">
+        <img src="/assets/skyla.png" alt="Skyla" style="width:140px; height:auto; display:inline-block;">
+      </div>
+      <!-- keep the existing tagline paragraph under it -->
       <p class="tagline" style="font-size:16px;color:#666">Cryptographically verified symbolic AI agent</p>
     </div>
 
