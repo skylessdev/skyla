@@ -18,43 +18,15 @@
       justify-content: center;
     }
     
-    .nav {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      gap: 30px;
-    }
-    
-    .nav a {
-      color: #1a1a1a;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    
-    .nav a:hover {
-      color: #666;
-    }
-    
-    .brand {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-    }
-    
-    .brand-text {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
+    /* === Unified header (homepage style) === */
+    .s-header{position:absolute;top:20px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between}
+    .s-brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.2px}
+    .s-brand__dot{display:inline-block;width:18px;height:18px;border:1.5px solid #111;border-radius:4px;position:relative;background:#fff}
+    .s-brand__dot::after{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#111;border-radius:50%}
+    .s-brand span{font-weight:600}
+    .s-nav{display:flex;gap:30px}
+    .s-nav a{color:#0f0f0f;text-decoration:none;font-size:14px;font-weight:500}
+    .s-nav a:hover{text-decoration:underline}
     
     .sign-in-card {
       background: #fff;
@@ -148,20 +120,14 @@
         margin: 20px;
       }
       
-      .nav {
-        position: relative;
-        top: 0;
-        right: 0;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-      
-      .brand {
+      .s-header {
         position: relative;
         top: 0;
         left: 0;
-        justify-content: center;
-        margin-bottom: 20px;
+        right: 0;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px;
       }
       
       body {
@@ -173,16 +139,17 @@
   </style>
 </head>
 <body>
-  <div class="brand">
-    <img class="brand-logo" src="/assets/skyla-mark.png" alt="Skyla mark" />
-    <span class="brand-text">skyla.dev</span>
-  </div>
-  
-  <nav class="nav">
-    <a href="/">Home</a>
-    <a href="/demo">Demo</a>
-    <a href="/docs">Docs</a>
-  </nav>
+  <header class="s-header">
+    <div class="s-brand">
+      <i class="s-brand__dot" aria-hidden="true"></i>
+      <span>skyla.dev</span>
+    </div>
+    <nav class="s-nav">
+      <a href="/demo">Demo</a>
+      <a href="/docs">Docs</a>
+      <a href="/sign-in">Sign in</a>
+    </nav>
+  </header>
   
   <div class="sign-in-card">
     <h1>Sign In</h1>

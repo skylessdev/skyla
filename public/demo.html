@@ -14,20 +14,16 @@
     }
     .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
     .header { text-align: center; margin-bottom: 40px; }
-    .nav {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      gap: 20px;
-    }
-    .nav a {
-      color: #1a1a1a;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .nav a:hover {
-      color: #666;
+    /* === Unified header (homepage style) === */
+    .s-header{display:flex;align-items:center;justify-content:space-between;margin:0 0 28px 0}
+    .s-brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.2px}
+    .s-brand__dot{display:inline-block;width:18px;height:18px;border:1.5px solid #111;border-radius:4px;position:relative;background:#fff}
+    .s-brand__dot::after{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#111;border-radius:50%}
+    .s-brand span{font-weight:600}
+    .s-nav a{color:#0f0f0f;text-decoration:none;margin-left:22px;font-size:14px}
+    .s-nav a:hover{text-decoration:underline}
+    @media (max-width:700px){
+      .s-nav a{margin-left:16px}
     }
     h1 {
       font-size: 48px;
@@ -188,17 +184,20 @@
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <a href="/">Home</a>
-    <a href="/demo">Demo</a>
-    <a href="/docs">Docs</a>
-    <a href="/sign-in">Sign in</a>
-  </nav>
-  
   <div class="container">
+    <header class="s-header">
+      <div class="s-brand">
+        <i class="s-brand__dot" aria-hidden="true"></i>
+        <span>skyla.dev</span>
+      </div>
+      <nav class="s-nav">
+        <a href="/demo">Demo</a>
+        <a href="/docs">Docs</a>
+        <a href="/sign-in">Sign in</a>
+      </nav>
+    </header>
+    
     <div class="header" style="text-align:center;margin-bottom:40px">
-      <img src="/assets/skyla-mark.png" alt="Skyla mark"
-           style="width:96px;height:auto;display:block;margin:0 auto 12px;object-fit:contain" />
       <h1 style="font-size:40px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px">Skyla</h1>
       <p class="tagline" style="font-size:16px;color:#666">Cryptographically verified symbolic AI agent</p>
     </div>

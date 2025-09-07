@@ -14,50 +14,17 @@
       line-height: 1.6;
     }
     
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: #f5f4f0;
-      border-bottom: 1px solid #e5e5e5;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-    
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-    }
-    
-    .brand-text {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 30px;
-    }
-    
-    .nav-links a {
-      color: #1a1a1a;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    
-    .nav-links a:hover {
-      color: #666;
+    /* === Unified header (homepage style) === */
+    .s-header{position:fixed;top:0;left:0;right:0;background:#f5f4f0;border-bottom:1px solid #e5e5e5;padding:20px;display:flex;align-items:center;justify-content:space-between;z-index:1000}
+    .s-brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.2px}
+    .s-brand__dot{display:inline-block;width:18px;height:18px;border:1.5px solid #111;border-radius:4px;position:relative;background:#fff}
+    .s-brand__dot::after{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#111;border-radius:50%}
+    .s-brand span{font-weight:600}
+    .s-nav{display:flex;gap:30px}
+    .s-nav a{color:#0f0f0f;text-decoration:none;font-size:14px;font-weight:500}
+    .s-nav a:hover{text-decoration:underline}
+    @media (max-width:700px){
+      .s-nav{gap:16px}
     }
     
     .layout {
@@ -211,19 +178,17 @@
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="brand">
-      <img class="brand-logo" src="/assets/skyla-mark.png" alt="Skyla mark" />
-      <span class="brand-text">skyla.dev</span>
+  <header class="s-header">
+    <div class="s-brand">
+      <i class="s-brand__dot" aria-hidden="true"></i>
+      <span>skyla.dev</span>
     </div>
-    
-    <div class="nav-links">
-      <a href="/">Home</a>
+    <nav class="s-nav">
       <a href="/demo">Demo</a>
       <a href="/docs">Docs</a>
       <a href="/sign-in">Sign in</a>
-    </div>
-  </nav>
+    </nav>
+  </header>
   
   <div class="layout">
     <div class="sidebar">
