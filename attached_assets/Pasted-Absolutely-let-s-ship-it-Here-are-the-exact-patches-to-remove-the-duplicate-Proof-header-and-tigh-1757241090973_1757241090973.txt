@@ -1,3 +1,9 @@
+Absolutely—let’s ship it. Here are the exact patches to remove the duplicate “Proof” header and tighten mobile spacing.
+
+1) Replace the SVG (frameless)
+
+Overwrite public/assets/proof-card.svg with this (no menu line, no “Proof” text, no top divider):
+
 <!-- public/assets/proof-card.svg -->
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
   <rect x="0" y="0" width="600" height="360" rx="12" fill="#111"/>
@@ -31,3 +37,35 @@
           font-size="14">Verify</text>
   </g>
 </svg>
+
+No other SVGs or screenshots should be referenced inside the card.
+
+2) Tweak homepage spacing (mobile polish)
+
+In public/index.html, inside the <style> block, add or adjust these rules:
+
+/* Proof card spacing & responsiveness */
+.card { padding: 18px 16px; }
+.card header { margin: 0 0 8px 0; }
+.proof-diagram img { width:100%; height:auto; display:block; border-radius:10px; }
+
+@media (max-width: 480px){
+  .headline { font-size: clamp(34px, 8vw, 48px); line-height: 1.05; }
+  .sub      { font-size: 16px; }
+  .card     { padding: 14px; border-radius: 12px; }
+}
+
+(Keep the outer .card header with “Proof” + hamburger—now it will be the only header.)
+
+3) Ensure the card uses the SVG
+
+Still in public/index.html, the proof image line should be:
+
+<img src="/assets/proof-card.svg" alt="Proof flow diagram"/>
+
+4) Restart cleanly (Replit)
+	•	Stop the current run.
+	•	Start again (Run → npm start).
+	•	If a stray process is hanging, open the shell and run: pkill -f node then start again.
+
+You should now see a single “Proof” header, crisp diagram (no recursion), and tighter mobile proportions.
