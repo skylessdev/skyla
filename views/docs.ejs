@@ -171,6 +171,7 @@
       <ul>
         <li><a href="#overview">Overview</a></li>
         <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#semantic-engine">Semantic Engine</a></li>
         <li><a href="#symbolic-imprint">Symbolic imprint</a></li>
         <li><a href="#state-proofs">State & proofs</a></li>
         <li><a href="#api">API (alpha)</a></li>
@@ -206,6 +207,61 @@
       
       <h3>Zero-Knowledge Proofs - Immune System / Verifiable Boundary</h3>
       <p>The bottom layer ensures cryptographic verification and maintains system integrity through zero-knowledge proofs.</p>
+      
+      <h2 id="semantic-engine">Semantic Engine</h2>
+      <p>Skyla's semantic engine processes natural language input through three layers of recognition, providing scalable pattern matching that maintains cryptographic integrity.</p>
+      
+      <h3>Processing Layers</h3>
+      <p>The engine handles input through a hierarchical system that prioritizes exact symbolic matches, falls back to semantic patterns, then uses deterministic hashing for unknown inputs.</p>
+      
+      <h3>1. Exact Symbolic Layer</h3>
+      <p>Direct matches for predefined symbolic triggers like <code>daemon</code>, <code>spiral</code>, <code>build</code>, or <code>analyze</code>. These trigger specific rule sets with predetermined state adjustments.</p>
+      
+      <h3>2. Semantic Pattern Matching</h3>
+      <p>Regex-based categorization that recognizes natural language patterns and applies contextual vector adjustments:</p>
+      
+      <div class="code-block">// Stress/Overwhelm Category
+/overwhelm|stress|anxio|panic|burnout|tired/
+Delta: [0.05, 0.15, 0.10, -0.02]
+Example: "I'm overwhelmed with work"
+
+// Focus/Building Category  
+/focus|concentrat|build|ship|execute|implement|deliver/
+Delta: [0.12, -0.05, 0.08, 0.10]
+Example: "Let's build something"
+
+// Analysis Category
+/analy[sz]e|reason|logic|evaluate|precise|assess|measure/
+Delta: [0.15, -0.02, 0.05, 0.08]
+Note: [sz] matches both "analyze" and "analyse"
+
+// Protection Category
+/protect|guard|safe|defend|daemon|monitor/
+Delta: [0.00, 0.08, -0.03, 0.04]
+Example: "Keep the system safe"
+
+// Creative Category
+/create|design|invent|imag(in|e)|idea|explore|brainstorm|prototype/
+Delta: [0.07, 0.06, 0.12, 0.03]
+Note: (in|e) matches both "imagine" and "image"</div>
+      
+      <h3>3. Hash Fallback System</h3>
+      <p>For inputs that don't match symbolic or semantic patterns, the system generates deterministic micro-adjustments using a hash function. This ensures consistent behavior for the same input while keeping changes within safe bounds (±0.05).</p>
+      
+      <div class="code-block">// Deterministic hash calculation
+let h = 0;
+for (let i = 0; i < text.length; i++) {
+  h = ((h << 5) - h) + text.charCodeAt(i);
+  h |= 0;
+}
+const deltas = [0,1,2,3].map(k => {
+  const byte = (h >> ((k * 8) % 24)) & 0xff;
+  return ((byte / 255) - 0.5) * 0.10; // [-0.05, 0.05]
+});
+return currentVec.map((v, i) => clamp01(v + deltas[i]));</div>
+      
+      <h3>Scaling Properties</h3>
+      <p>The semantic engine scales infinitely without rule explosion by allowing new regex patterns to be added without touching core logic. Every transition type (symbolic, semantic, or hash-based) generates valid ZK proofs maintaining cryptographic integrity.</p>
       
       <h2 id="symbolic-imprint">Symbolic imprint</h2>
       <p>The symbolic imprint defines the core structure of an agent's identity and behavior patterns. It consists of several key components that determine how the agent processes information and makes decisions.</p>
