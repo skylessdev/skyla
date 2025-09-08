@@ -7,8 +7,13 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background:#f5f4f0; color:#1a1a1a; line-height:1.4;
+    }
+    
+    /* Keep console and code elements monospace */
+    .console, .console *, .vector-display, input[type="text"], button {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
     }
     .container { max-width:1200px; margin:0 auto; padding:40px 20px; }
     .header { text-align:center; margin-bottom:40px; }
