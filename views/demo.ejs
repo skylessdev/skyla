@@ -17,8 +17,9 @@
     }
     .container { max-width:1200px; margin:0 auto; padding:40px 20px; }
     .header { text-align:center; margin-bottom:40px; }
-    .logo { width:80px; height:80px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; }
-    .logo img { width: 100%; height: 100%; object-fit: contain; }
+    .logo { width:80px; height:80px; margin:0 auto 20px; background:#1a1a1a; border-radius:20px; display:flex; align-items:center; justify-content:center; position:relative; }
+    .logo::before { content:''; width:40px; height:40px; border:3px solid #f5f4f0; border-radius:4px; position:absolute; background:transparent; }
+    .logo::after { content:''; width:8px; height:8px; background:#f5f4f0; border-radius:50%; position:absolute; top:15px; }
     h1 { font-size:48px; font-weight:600; color:#1a1a1a; letter-spacing:-0.02em; margin-bottom:10px; }
     .tagline { font-size:18px; color:#666; font-weight:400; }
     .console { background:#1a1a1a; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.1); margin-bottom:30px; }
@@ -95,9 +96,7 @@
   
   <div class="container">
     <div class="header">
-      <div class="logo">
-        <img src="/assets/skyla-logo.png" alt="Skyla" />
-      </div>
+      <div class="logo"></div>
       <h1>Skyla</h1>
       <p class="tagline">Cryptographically verified symbolic AI agent</p>
     </div>
