@@ -37,7 +37,15 @@
     .log-level { margin-right:10px; font-weight:600; min-width:60px; }
     .info{color:#4a9eff;} .success{color:#27ca3f;} .warning{color:#ffbd2e;} .error{color:#ff5f56;}
     .log-message { flex:1; color:#e6e6e6; }
-    .json-object { color:#7dd3fc; margin-left:20px; white-space:pre-wrap; }
+    .json-object { 
+      color:#7dd3fc; 
+      margin-left:20px; 
+      white-space:pre-wrap; 
+      max-height:none; 
+      overflow:visible; 
+      word-wrap:break-word; 
+      word-break:break-word; 
+    }
     .key{color:#fbbf24;} .string{color:#34d399;} .number{color:#f472b6;} .boolean{color:#a78bfa;}
     
     /* Integrity indicator styles */
@@ -191,7 +199,10 @@
       `;
 
       if (data) {
-        content += `<div class="json-object">${JSON.stringify(data, null, 2)
+        // Enhanced JSON display with no truncation
+        const jsonString = JSON.stringify(data, null, 2);
+        console.log('JSON display length:', jsonString.length); // Debug logging
+        content += `<div class="json-object">${jsonString
           .replace(/"([^"]+)":/g, '<span class="key">"$1":</span>')
           .replace(/: "([^"]+)"/g, ': <span class="string">"$1"</span>')
           .replace(/: ([0-9.-]+)/g, ': <span class="number">$1</span>')
