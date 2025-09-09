@@ -16,6 +16,73 @@ const anthropic = new Anthropic({
 // Middleware for parsing JSON
 app.use(express.json());
 
+// ================== CONVERSATION MEMORY SYSTEM ==================
+
+// Session-based conversation memory storage
+const conversationSessions = new Map();
+const MAX_CONTEXT_LENGTH = 4000; // Token limit for context window
+
+function getOrCreateSession(sessionId = 'default') {
+  if (!conversationSessions.has(sessionId)) {
+    conversationSessions.set(sessionId, {
+      messages: [],
+      createdAt: Date.now(),
+      lastActivity: Date.now()
+    });
+  }
+  return conversationSessions.get(sessionId);
+}
+
+function addToConversationHistory(sessionId, userInput, modelResponse, metadata) {
+  const session = getOrCreateSession(sessionId);
+  session.messages.push({
+    timestamp: Date.now(),
+    user: userInput,
+    assistant: modelResponse,
+    metadata: {
+      identityVector: metadata.identityVector,
+      mode: metadata.mode,
+      protocols: metadata.protocols,
+      integrityScore: metadata.integrityScore
+    }
+  });
+  session.lastActivity = Date.now();
+  
+  // Keep last 10 exchanges to prevent memory bloat
+  if (session.messages.length > 10) {
+    session.messages = session.messages.slice(-10);
+  }
+}
+
+function buildContextualPrompt(sessionId, currentState, userInput) {
+  const session = getOrCreateSession(sessionId);
+  
+  let contextHistory = "";
+  if (session.messages.length > 0) {
+    // Include last 3-4 exchanges for context
+    const recentMessages = session.messages.slice(-4);
+    contextHistory = "\nRecent conversation history:\n" + 
+      recentMessages.map(msg => 
+        `User: "${msg.user}"\nSkyla: "${msg.assistant.substring(0, 200)}${msg.assistant.length > 200 ? '...' : ''}"`
+      ).join('\n\n') + "\n\n";
+  }
+
+  return `You are Skyla, a cryptographically verified symbolic AI agent. You process inputs while maintaining symbolic consistency with your identity vector system and conversational continuity.
+
+Current State:
+- Identity Vector: [${currentState.identityVector.join(', ')}]
+- Mode: ${currentState.mode}
+- Active Protocols: ${currentState.protocols.join(', ')}
+${contextHistory}
+Your response should:
+1. Acknowledge the symbolic state transition that occurred
+2. Maintain conversational continuity by referencing relevant context when appropriate
+3. Provide meaningful, context-aware insight based on the current input: "${userInput}"
+4. Stay consistent with your current mode and protocols
+
+Respond as Skyla with symbolic awareness and conversational memory.`;
+}
+
 // ================== MULTI-MODEL DELTA DIVERGENCE SYSTEM ==================
 
 // Divergence calculation functions
@@ -259,27 +326,14 @@ app.use(express.static(path.join(__dirname, "public")));
 // Enhanced Claude API endpoint with multi-model integrity verification
 app.post("/api/claude", async (req, res) => {
   try {
-    const { input, currentState } = req.body;
+    const { input, currentState, sessionId = 'default' } = req.body;
     
     if (!input || !currentState) {
       return res.status(400).json({ error: "Missing input or currentState" });
     }
 
-    // Create context-aware prompt that maintains symbolic consistency
-    const systemPrompt = `You are Skyla, a cryptographically verified symbolic AI agent. You process inputs while maintaining symbolic consistency with your identity vector system.
-
-Current State:
-- Identity Vector: [${currentState.identityVector.join(', ')}]
-- Mode: ${currentState.mode}
-- Active Protocols: ${currentState.protocols.join(', ')}
-
-Your response should:
-1. Acknowledge the symbolic state transition that occurred
-2. Provide meaningful, context-aware insight based on the input
-3. Maintain consistency with your current mode and protocols
-4. Be concise but thoughtful (2-3 sentences max)
-
-Respond as Skyla in character, acknowledging both the symbolic processing and providing intelligent analysis.`;
+    // Create context-aware prompt with conversation history
+    const systemPrompt = buildContextualPrompt(sessionId, currentState, input);
 
     // Perform multi-model integrity check
     const integrityResult = await performMultiModelIntegrityCheck(input, currentState, systemPrompt);
@@ -295,6 +349,19 @@ Respond as Skyla in character, acknowledging both the symbolic processing and pr
       proofVersion: "v3.0_multi_model_verified"
     };
 
+    // Save conversation to history before responding
+    addToConversationHistory(
+      sessionId,
+      input,
+      integrityResult.primaryResponse.response,
+      {
+        identityVector: currentState.identityVector,
+        mode: currentState.mode,
+        protocols: currentState.protocols,
+        integrityScore: integrityResult.integrityScore
+      }
+    );
+
     // Handle response based on integrity level
     switch (integrityResult.action) {
       case 'proceed': // High integrity (>0.8)
@@ -309,6 +376,7 @@ Respond as Skyla in character, acknowledging both the symbolic processing and pr
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
             enhancedProof: enhancedProof,
+            contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             timestamp: new Date().toISOString()
           }
         });
@@ -327,6 +395,7 @@ Respond as Skyla in character, acknowledging both the symbolic processing and pr
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
             enhancedProof: enhancedProof,
+            contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             fallback: integrityResult.fallback || false,
             timestamp: new Date().toISOString()
           }
@@ -345,6 +414,7 @@ Respond as Skyla in character, acknowledging both the symbolic processing and pr
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
             enhancedProof: enhancedProof,
+            contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             timestamp: new Date().toISOString()
           }
         });
