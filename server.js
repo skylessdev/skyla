@@ -585,6 +585,30 @@ function assessEpistemicUncertainty(input, divergenceMetrics, sessionContext = n
 
 // Multi-model consensus system
 async function performMultiModelIntegrityCheck(input, currentState, systemPrompt) {
+  // Check if Claude client is available
+  if (!anthropic) {
+    console.log('⚠️ Claude API unavailable - returning mock response');
+    return {
+      success: true,
+      integrityScore: 0.7,
+      consensusStrength: 0.7,
+      primaryResponse: {
+        model: "local_fallback",
+        response: `I understand you're asking about "${input}". However, the AI processing system is currently unavailable because the CLAUDE_API_KEY environment variable is not configured. To enable full AI features, please configure your API key in the deployment settings.`,
+        tokens: 50
+      },
+      divergenceMetrics: {
+        lengthVariance: 0,
+        sentimentDivergence: 0,
+        topicDivergence: 0,
+        toneConsistency: 0
+      },
+      fallback: true,
+      action: 'proceed_with_note',
+      noApiKey: true
+    };
+  }
+
   const models = [
     "claude-3-haiku-20240307",      // Efficiency-focused: Fast, concise responses
     "claude-3-5-sonnet-20241022"    // Quality-focused: Nuanced, detailed responses
@@ -668,37 +692,83 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
   } catch (error) {
     console.error("Multi-model integrity check failed:", error);
     
-    // Fallback to single model
-    const fallbackMessage = await anthropic.messages.create({
-      model: "claude-3-haiku-20240307",
-      max_tokens: 150,
-      system: systemPrompt,
-      messages: [
-        {
-          role: "user",
-          content: `Process this input with symbolic awareness: "${input}"`
-        }
-      ]
-    });
+    // Check if Claude client is available for fallback
+    if (!anthropic) {
+      return {
+        success: true,
+        integrityScore: 0.5,
+        consensusStrength: 0.5,
+        primaryResponse: {
+          model: "local_fallback",
+          response: `I encountered an error processing your request "${input}". Additionally, the Claude API is not available because CLAUDE_API_KEY is not configured. Please configure your API key to enable AI features.`,
+          tokens: 40
+        },
+        divergenceMetrics: {
+          lengthVariance: 0,
+          sentimentDivergence: 0,
+          topicDivergence: 0,
+          toneConsistency: 0
+        },
+        fallback: true,
+        action: 'proceed_with_note',
+        noApiKey: true
+      };
+    }
     
-    return {
-      success: true,
-      integrityScore: 0.5, // Unknown integrity
-      consensusStrength: 0.5, // Fallback consensus
-      primaryResponse: {
+    // Fallback to single model if API key is available
+    try {
+      const fallbackMessage = await anthropic.messages.create({
         model: "claude-3-haiku-20240307",
-        response: fallbackMessage.content[0].text,
-        tokens: fallbackMessage.usage.output_tokens
-      },
-      divergenceMetrics: {
-        lengthVariance: 0,
-        sentimentDivergence: 0,
-        topicDivergence: 0,
-        toneConsistency: 0
-      },
-      fallback: true,
-      action: 'proceed_with_note'
-    };
+        max_tokens: 150,
+        system: systemPrompt,
+        messages: [
+          {
+            role: "user",
+            content: `Process this input with symbolic awareness: "${input}"`
+          }
+        ]
+      });
+      
+      return {
+        success: true,
+        integrityScore: 0.5, // Unknown integrity
+        consensusStrength: 0.5, // Fallback consensus
+        primaryResponse: {
+          model: "claude-3-haiku-20240307",
+          response: fallbackMessage.content[0].text,
+          tokens: fallbackMessage.usage.output_tokens
+        },
+        divergenceMetrics: {
+          lengthVariance: 0,
+          sentimentDivergence: 0,
+          topicDivergence: 0,
+          toneConsistency: 0
+        },
+        fallback: true,
+        action: 'proceed_with_note'
+      };
+    } catch (fallbackError) {
+      console.error("Fallback also failed:", fallbackError);
+      return {
+        success: true,
+        integrityScore: 0.3,
+        consensusStrength: 0.3,
+        primaryResponse: {
+          model: "error_fallback",
+          response: `I'm experiencing technical difficulties processing "${input}". Please try again later or check your API configuration.`,
+          tokens: 20
+        },
+        divergenceMetrics: {
+          lengthVariance: 0,
+          sentimentDivergence: 0,
+          topicDivergence: 0,
+          toneConsistency: 0
+        },
+        fallback: true,
+        action: 'proceed_with_note',
+        error: true
+      };
+    }
   }
 }
 
