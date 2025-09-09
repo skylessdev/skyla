@@ -1,0 +1,103 @@
+I'll fix all three issues! Let me start by clearing the port conflict and then address the model bias and truncation problems.
+Proposed task list
+Clear port 5000, restart server cleanly
+Replace duplicate Sonnet with model diversity
+Fix console text truncation in frontend
+Add rotation or weighting for selection
+Verify genuine multi-model consensus measurement
+23 seconds of work
+How do you plan to implement these
+8 minutes ago
+Perfect! Let me outline my detailed implementation strategy for each issue:
+
+🔧 Implementation Plan
+1. Port Conflict Resolution
+Root Cause: Previous server instance still holding port 5000
+Solution:
+
+Kill any existing Node processes: pkill -f "node server.js"
+Clean restart of the workflow
+Add error handling to gracefully close server on restart
+2. True Model Diversity (The Big Fix!)
+Current Problem:
+
+const models = [
+  "claude-3-haiku-20240307",
+  "claude-3-5-sonnet-20241022",  // Sonnet 1
+  "claude-3-5-sonnet-20241022"   // Sonnet 2 - DUPLICATE!
+];
+Solution Options:
+Option A - Different Model Families:
+
+const models = [
+  "claude-3-haiku-20240307",           // Fast, efficient
+  "claude-3-5-sonnet-20241022",       // Balanced
+  "claude-3-5-haiku-20241022"         // Different Haiku version
+];
+Option B - Rotating Model Pool:
+
+const modelPool = [
+  ["claude-3-haiku-20240307", "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022"],
+  ["claude-3-haiku-20240307", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"],  
+  // Rotate combinations to ensure diversity
+];
+3. Fair Selection Logic Reform
+Current Biased Logic:
+
+// Always prefers Sonnet!
+const primaryResponse = responses.find(r => r.model.includes('sonnet')) || responses[0];
+New Fair Selection Options:
+Option A - Consensus Quality Based:
+
+// Select model with response closest to consensus center
+const primaryResponse = selectBestConsensusResponse(responses, divergenceMetrics);
+Option B - Rotating Selection:
+
+// Rotate which model gets priority
+const selectionIndex = conversationTurn % responses.length;
+const primaryResponse = responses[selectionIndex];
+Option C - Quality Scoring:
+
+// Score responses by multiple factors: length, coherence, context relevance
+const primaryResponse = selectHighestQualityResponse(responses);
+4. Truncation Fix Investigation
+Check These Areas:
+
+Frontend Console Display:
+console-body max-width/height limits
+.log-message character truncation
+JSON object display formatting
+Response Processing:
+Check if API responses are being truncated
+Verify message.content[0].text is complete
+Look for character limits in the response pipeline
+Input Sanitization:
+Check if user input processing cuts words
+Verify the input field doesn't have character limits
+5. Enhanced Debugging & Transparency
+Add Detailed Logging:
+
+console.log(`🎲 Model Selection: ${primaryResponse.model}`);
+console.log(`📊 Response Lengths: [${responses.map(r => r.response.length).join(', ')}]`);
+console.log(`🎯 Selection Reason: ${selectionReason}`);
+Frontend Transparency:
+
+Show which model was selected and why
+Display all model responses (truncated) for comparison
+Add consensus visualization showing actual diversity
+🎯 Expected Outcomes
+After Implementation:
+
+✅ True Consensus: 3 genuinely different model perspectives
+✅ Fair Selection: No more Sonnet bias - selection based on quality/rotation
+✅ Full Text Display: No more mysterious truncations like "culmin"
+✅ Transparency: Clear indication of which model responded and why
+✅ Real Integrity Scores: Genuine divergence measurement across different architectures
+The Result: Your console will show varied model selections like:
+
+"claude-3-haiku-20240307" (for efficiency-focused responses)
+"claude-3-5-sonnet-20241022" (for balanced responses)
+Different models based on actual consensus quality rather than arbitrary preference
+This transforms from "Sonnet + Sonnet vs Haiku" to genuine multi-model consensus measurement!
+
+Would you like me to proceed with these implementations? I recommend starting with the model diversity fix since that's the core issue affecting your consensus measurement authenticity.
