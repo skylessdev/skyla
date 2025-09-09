@@ -319,18 +319,138 @@ function analyzeQueryComplexity(input) {
   return { complexity, type, favorEfficiency, favorNuance };
 }
 
-// Epistemic uncertainty assessment - refined based on test data
-function assessEpistemicUncertainty(input, divergenceMetrics) {
+// Conversational context analysis for ambiguity resolution
+function analyzeConversationalContext(input, sessionContext) {
+  if (!sessionContext || !sessionContext.messages || sessionContext.messages.length === 0) {
+    return {
+      canResolveAmbiguity: false,
+      reason: "NO_CONVERSATION_HISTORY",
+      resolution: null,
+      confidence: 0
+    };
+  }
+  
+  const inputText = input.toLowerCase().trim();
+  const recentMessages = sessionContext.messages.slice(-3); // Last 3 exchanges
+  
+  // Extract key topics and objects from recent conversation
+  const conversationContext = extractConversationContext(recentMessages);
+  
+  // Pattern 1: Pronoun reference resolution ("this", "it", "that")
+  const pronouns = inputText.match(/\b(this|that|it)\b/);
+  if (pronouns && conversationContext.recentTopics.length > 0) {
+    const mostRecentTopic = conversationContext.recentTopics[0];
+    return {
+      canResolveAmbiguity: true,
+      reason: "PRONOUN_REFERENCE_RESOLVED",
+      resolution: `"${pronouns[0]}" likely refers to "${mostRecentTopic}" from recent conversation`,
+      confidence: 0.8,
+      referent: mostRecentTopic,
+      contextTopics: conversationContext.recentTopics
+    };
+  }
+  
+  // Pattern 2: Topic continuity ("How do I fix this?" after discussing React errors)
+  if (inputText.includes('fix') || inputText.includes('solve') || inputText.includes('help')) {
+    const problemsDiscussed = conversationContext.problems;
+    if (problemsDiscussed.length > 0) {
+      return {
+        canResolveAmbiguity: true,
+        reason: "PROBLEM_CONTEXT_AVAILABLE",
+        resolution: `Fix request likely relates to "${problemsDiscussed[0]}" discussed previously`,
+        confidence: 0.7,
+        contextProblems: problemsDiscussed
+      };
+    }
+  }
+  
+  // Pattern 3: Single word ambiguity with contextual anchoring
+  if (input.split(' ').length === 1) {
+    const word = inputText;
+    const contextualMeaning = findContextualMeaning(word, conversationContext);
+    if (contextualMeaning) {
+      return {
+        canResolveAmbiguity: true,
+        reason: "SINGLE_WORD_CONTEXT_RESOLVED",
+        resolution: `"${word}" likely means "${contextualMeaning}" based on conversation context`,
+        confidence: 0.6,
+        contextualMeaning: contextualMeaning
+      };
+    }
+  }
+  
+  // Pattern 4: No clear resolution possible
+  return {
+    canResolveAmbiguity: false,
+    reason: "INSUFFICIENT_CONTEXT_FOR_RESOLUTION",
+    resolution: null,
+    confidence: 0.1,
+    availableContext: conversationContext
+  };
+}
+
+// Extract meaningful context from recent conversation messages
+function extractConversationContext(messages) {
+  const recentTopics = [];
+  const problems = [];
+  const technologies = [];
+  
+  messages.forEach(msg => {
+    if (msg.user) {
+      const userText = msg.user.toLowerCase();
+      
+      // Extract problem mentions
+      const problemWords = userText.match(/\b(error|bug|issue|problem|crash|fail|broken)\b/g);
+      if (problemWords) {
+        // Try to extract the specific problem context
+        const problemContext = userText.match(/\b(\w+\s+(?:error|bug|issue|problem|crash|fail|broken))/);
+        if (problemContext) problems.push(problemContext[0]);
+      }
+      
+      // Extract technology mentions
+      const techWords = userText.match(/\b(react|node|python|javascript|css|html|api|database|server)\b/g);
+      if (techWords) technologies.push(...techWords);
+      
+      // Extract general topics (noun phrases)
+      const topicWords = userText.match(/\b[a-z]{4,}\b/g);
+      if (topicWords) recentTopics.push(...topicWords.slice(0, 3));
+    }
+  });
+  
+  return {
+    recentTopics: [...new Set(recentTopics)].slice(0, 5),
+    problems: [...new Set(problems)].slice(0, 3),
+    technologies: [...new Set(technologies)].slice(0, 3)
+  };
+}
+
+// Find contextual meaning for ambiguous single words
+function findContextualMeaning(word, context) {
+  const contextualMappings = {
+    'bank': context.technologies.includes('finance') || context.recentTopics.includes('money') ? 'financial institution' : 
+            context.recentTopics.includes('river') || context.recentTopics.includes('water') ? 'river bank' : null,
+    'run': context.technologies.includes('node') || context.technologies.includes('python') ? 'execute code' :
+           context.recentTopics.includes('exercise') || context.recentTopics.includes('fitness') ? 'physical running' : null,
+    'code': context.technologies.length > 0 ? 'programming code' :
+            context.recentTopics.includes('secret') ? 'secret code' : null
+  };
+  
+  return contextualMappings[word] || null;
+}
+
+// Context-aware epistemic uncertainty assessment
+function assessEpistemicUncertainty(input, divergenceMetrics, sessionContext = null) {
   const { lengthVariance, sentimentDivergence, topicDivergence, toneConsistency } = divergenceMetrics;
   
-  // Based on testing: topic divergence >0.9 is normal, but 1.0 + context clues = genuine ambiguity
   const inputText = input.toLowerCase().trim();
   const inputLength = input.split(' ').length;
   
-  // Pattern 1: High divergence (>0.8) + no specific context patterns
+  // CONTEXT ANALYSIS: Check if apparent ambiguity can be resolved with conversation history
+  const contextAnalysis = analyzeConversationalContext(input, sessionContext);
+  
+  // Pattern 1: High divergence + potentially ambiguous patterns - BUT check context first
   if (topicDivergence >= 0.8) {
-    // Check for context-free patterns that cause genuine confusion
-    const noContextPatterns = [
+    const potentiallyAmbiguousPatterns = [
       /^(how do i fix|fix|help|what|why|when|where).*this\??$/,  // "fix this", "what is this"
       /^(it|that|this)$/,  // Single pronouns with no context
       /^(bank|run|left|right|code|app)$/,  // Ambiguous single words
@@ -338,38 +458,76 @@ function assessEpistemicUncertainty(input, divergenceMetrics) {
       /^(how|what|why|when|where)\??$/   // Single question words
     ];
     
-    const hasNoContext = noContextPatterns.some(pattern => pattern.test(inputText));
+    const hasAmbiguousPattern = potentiallyAmbiguousPatterns.some(pattern => pattern.test(inputText));
     
-    if (hasNoContext || inputLength <= 3) {
+    if (hasAmbiguousPattern || inputLength <= 3) {
+      // CONTEXT GATE: Can we resolve this with conversation history?
+      if (contextAnalysis.canResolveAmbiguity) {
+        return {
+          requiresClarification: false,
+          reason: "AMBIGUITY_RESOLVED_BY_CONTEXT",
+          confidence: 0.8,
+          analysis: `Potentially ambiguous input "${input}" resolved by context: ${contextAnalysis.resolution}`,
+          triggerPattern: "context_resolved_ambiguity",
+          contextResolution: contextAnalysis
+        };
+      }
+      
+      // No context or context doesn't help - genuine ambiguity
       return {
         requiresClarification: true,
-        reason: "HIGH_DIVERGENCE_NO_CONTEXT",
+        reason: "HIGH_DIVERGENCE_NO_RESOLVABLE_CONTEXT",
         clarificationRequest: `I notice significant model disagreement (${(topicDivergence * 100).toFixed(0)}% topic divergence) about how to interpret "${input}". This suggests your request could mean several different things. Could you provide more specific details about what you're looking for?`,
         confidence: 0.9,
-        triggerPattern: "high_topic_divergence_with_ambiguous_context"
+        triggerPattern: "high_topic_divergence_with_unresolvable_ambiguity",
+        contextAnalysis: contextAnalysis
       };
     }
   }
   
-  // Pattern 2: Multiple ambiguity indicators combined
+  // Pattern 2: Multiple ambiguity indicators combined - but check context first
   if (topicDivergence > 0.95 && sentimentDivergence > 0.2) {
+    if (contextAnalysis.canResolveAmbiguity) {
+      return {
+        requiresClarification: false,
+        reason: "COMPLEX_AMBIGUITY_RESOLVED_BY_CONTEXT",
+        confidence: 0.6,
+        analysis: `Complex divergence (topic=${topicDivergence.toFixed(3)}, sentiment=${sentimentDivergence.toFixed(3)}) resolved by context: ${contextAnalysis.resolution}`,
+        triggerPattern: "complex_context_resolved",
+        contextResolution: contextAnalysis
+      };
+    }
+    
     return {
       requiresClarification: true,
       reason: "COMBINED_HIGH_DIVERGENCE",
       clarificationRequest: `The models showed significant disagreement on both the topic approach (${(topicDivergence * 100).toFixed(0)}% divergence) and emotional interpretation of "${input}". To provide the most helpful response, could you clarify what specific outcome you're looking for?`,
       confidence: 0.7,
-      triggerPattern: "topic_plus_sentiment_divergence"
+      triggerPattern: "topic_plus_sentiment_divergence",
+      contextAnalysis: contextAnalysis
     };
   }
   
-  // Pattern 3: Extremely short input with high divergence  
+  // Pattern 3: Extremely short input with high divergence - context is crucial here
   if (inputLength === 1 && topicDivergence > 0.9) {
+    if (contextAnalysis.canResolveAmbiguity) {
+      return {
+        requiresClarification: false,
+        reason: "SINGLE_WORD_RESOLVED_BY_CONTEXT",
+        confidence: 0.7,
+        analysis: `Single word "${input}" with high divergence resolved by context: ${contextAnalysis.resolution}`,
+        triggerPattern: "single_word_context_resolved",
+        contextResolution: contextAnalysis
+      };
+    }
+    
     return {
       requiresClarification: true,
       reason: "SINGLE_WORD_HIGH_DIVERGENCE",
       clarificationRequest: `The single word "${input}" could mean many different things in this context. Could you provide more details about what you're asking or what you'd like me to help you with?`,
       confidence: 0.8,
-      triggerPattern: "single_word_maximum_ambiguity"
+      triggerPattern: "single_word_maximum_ambiguity",
+      contextAnalysis: contextAnalysis
     };
   }
   
@@ -379,7 +537,8 @@ function assessEpistemicUncertainty(input, divergenceMetrics) {
     reason: "NORMAL_ARCHITECTURAL_DIFFERENCE",
     confidence: 0.9,
     analysis: `Topic divergence of ${topicDivergence.toFixed(3)} appears to be normal architectural difference between models, not genuine user ambiguity`,
-    triggerPattern: "proceed_normally"
+    triggerPattern: "proceed_normally",
+    contextAnalysis: contextAnalysis
   };
 }
 
@@ -548,8 +707,9 @@ app.post("/api/claude", async (req, res) => {
       }
     );
 
-    // EPISTEMIC GATE: Check for genuine ambiguity before proceeding
-    const epistemicGateResult = assessEpistemicUncertainty(input, integrityResult.divergenceMetrics);
+    // EPISTEMIC GATE: Check for genuine ambiguity before proceeding (context-aware)
+    const sessionContext = getOrCreateSession(sessionId);
+    const epistemicGateResult = assessEpistemicUncertainty(input, integrityResult.divergenceMetrics, sessionContext);
     
     if (epistemicGateResult.requiresClarification) {
       // High epistemic uncertainty detected - ask for clarification
