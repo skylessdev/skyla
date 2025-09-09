@@ -100,19 +100,22 @@ Preferred communication style: Simple, everyday language.
 ## Technical Dependencies
 
 ### Runtime Environment
-- **Node.js**: JavaScript runtime with ES module support
+- **Node.js (>=18.0.0)**: JavaScript runtime with ES module support
 - **Express.js (^4.21.2)**: Web framework with middleware support
-- **EJS (^3.1.9)**: Server-side templating engine
-- **@anthropic-ai/sdk**: Official Claude API integration
+- **EJS (^3.1.10)**: Server-side templating engine
+- **@anthropic-ai/sdk (^0.61.0)**: Official Claude API integration
 
 ### Environment Configuration  
-- **CLAUDE_API_KEY**: Required for multi-model consensus system
+- **CLAUDE_API_KEY**: Required for multi-model consensus system (graceful fallback if missing)
 - **PORT**: Server port (defaults to 5000)
 
 ### Deployment Architecture
+- **Build Process**: Automated dependency installation via `npm install`
+- **Autoscale Deployment**: Stateless web application with on-demand scaling
+- **Enhanced Error Handling**: Comprehensive environment validation and graceful API fallbacks
 - **Static Asset Serving**: Public directory with brand assets
 - **Template-Based Routing**: Clean URLs without file extensions
-- **Graceful Error Handling**: 404 fallback and error recovery
+- **Production Ready**: Full deployment configuration with proper build commands
 
 ## API Interface
 

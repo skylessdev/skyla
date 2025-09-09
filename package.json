@@ -1,12 +1,20 @@
 {
   "name": "skyla-site",
   "type": "module",
+  "version": "1.0.0",
+  "description": "Skyla - Cryptographically Verified Symbolic AI Agent",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "npm install",
+    "dev": "node server.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.61.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

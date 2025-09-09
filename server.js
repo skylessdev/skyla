@@ -8,19 +8,48 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Validate required environment variables
-if (!process.env.CLAUDE_API_KEY) {
-  console.warn('⚠️ CLAUDE_API_KEY environment variable is not set');
-  console.warn('AI features will be disabled until CLAUDE_API_KEY is configured');
+// Enhanced environment variable validation with graceful fallback
+function validateEnvironment() {
+  const errors = [];
+  const warnings = [];
+  
+  if (!process.env.CLAUDE_API_KEY) {
+    warnings.push('CLAUDE_API_KEY environment variable is not set - AI features will be limited');
+  }
+  
+  if (!process.env.PORT) {
+    console.log('ℹ️ PORT not specified, defaulting to 5000');
+  }
+  
+  if (warnings.length > 0) {
+    console.warn('⚠️ Environment Warnings:');
+    warnings.forEach(warning => console.warn(`   - ${warning}`));
+  }
+  
+  if (errors.length > 0) {
+    console.error('❌ Environment Errors:');
+    errors.forEach(error => console.error(`   - ${error}`));
+    console.error('Server cannot start with missing required environment variables');
+    process.exit(1);
+  }
+  
+  return { hasApiKey: !!process.env.CLAUDE_API_KEY };
 }
 
-// Initialize Claude client only if API key is available
+const envStatus = validateEnvironment();
+
+// Initialize Claude client with enhanced error handling
 let anthropic = null;
-if (process.env.CLAUDE_API_KEY) {
-  anthropic = new Anthropic({
-    apiKey: process.env.CLAUDE_API_KEY,
-  });
-  console.log('✅ Claude AI client initialized successfully');
+if (envStatus.hasApiKey) {
+  try {
+    anthropic = new Anthropic({
+      apiKey: process.env.CLAUDE_API_KEY,
+    });
+    console.log('✅ Claude AI client initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Claude AI client:', error.message);
+    console.warn('AI features will be disabled');
+  }
 } else {
   console.log('ℹ️ Claude AI client not initialized - API key missing');
 }
@@ -783,6 +812,15 @@ app.use(express.static(path.join(__dirname, "public")));
 // Enhanced Claude API endpoint with multi-model integrity verification
 app.post("/api/claude", async (req, res) => {
   try {
+    // Check if Claude API is available
+    if (!anthropic) {
+      return res.status(503).json({ 
+        error: "Claude AI service is not available",
+        message: "API key not configured - AI features are disabled",
+        fallback: true
+      });
+    }
+    
     const { input, currentState, sessionId = 'default' } = req.body;
     
     if (!input || !currentState) {
