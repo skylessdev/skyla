@@ -172,6 +172,7 @@
         <li><a href="#overview">Overview</a></li>
         <li><a href="#architecture">Architecture</a></li>
         <li><a href="#consensus-system">Consensus System</a></li>
+        <li><a href="#identity-vector">Identity Vector System</a></li>
         <li><a href="#semantic-engine">Semantic Engine</a></li>
         <li><a href="#symbolic-imprint">Symbolic imprint</a></li>
         <li><a href="#state-proofs">State & proofs</a></li>
@@ -301,6 +302,59 @@ Selection Process:
         <li><strong>Low Integrity (<50%):</strong> Significant disagreement, clarification requested</li>
       </ul>
       
+      <h2 id="identity-vector">Identity Vector System</h2>
+      <p><strong>Status: Currently Implemented</strong> - Client-side state management with server-side context awareness.</p>
+      
+      <h3>Architecture Overview</h3>
+      <p>Skyla's identity vector system implements a <strong>client-side state management</strong> architecture that ensures cryptographic verifiability and deterministic behavior.</p>
+      
+      <h3>4-Dimensional State Space</h3>
+      <p>The identity vector represents agent state as: <code>[cognitive, emotional, adaptive, coherence]</code></p>
+      
+      <div class="code-block">// Current state example
+identityVector: [0.7, 0.6, 0.8, 0.5]
+//               ↑    ↑    ↑    ↑
+//               │    │    │    └─ Coherence level
+//               │    │    └─ Adaptive capacity  
+//               │    └─ Emotional processing
+//               └─ Cognitive focus</div>
+      
+      <h3>Client-Server Separation</h3>
+      <p>The system maintains strict separation of concerns:</p>
+      <ul>
+        <li><strong>Client Side:</strong> Computes all vector transitions using deterministic algorithms</li>
+        <li><strong>Server Side:</strong> Receives vector for contextual awareness, never modifies it</li>
+      </ul>
+      
+      <h3>State Transition Processing</h3>
+      <div class="code-block">// Two-layer processing system:
+
+1. Exact Symbolic Rules:
+   "spiral" → vectorAdjustment: [0.1, 0.2, 0.3, 0.0]
+   "daemon" → vectorAdjustment: [0.0, 0.1, -0.05, 0.0]
+   
+2. Semantic Pattern Matching:
+   /overwhelm|stress/ → [0.05, 0.15, 0.10, -0.02]
+   /focus|build/ → [0.12, -0.05, 0.08, 0.10]</div>
+      
+      <h3>Data Flow</h3>
+      <div class="code-block">Client:  User input → State transition → New vector
+         ↓
+Server:  Receives {input, currentState} → Uses vector in context
+         ↓  
+Claude:  Gets system prompt with identity vector context
+         ↓
+Client:  Receives response (vector unchanged)</div>
+      
+      <h3>Cryptographic Benefits</h3>
+      <p>This architecture provides:</p>
+      <ul>
+        <li><strong>Verifiable Determinism:</strong> Same input always produces same vector change</li>
+        <li><strong>Mathematical Proof:</strong> All transitions can be independently verified</li>
+        <li><strong>No State Corruption:</strong> Server cannot accidentally modify agent state</li>
+        <li><strong>Transparency:</strong> All state logic visible in client-side code</li>
+      </ul>
+      
       <h2 id="semantic-engine">Semantic Engine</h2>
       <p>Skyla's semantic engine processes natural language input through three layers of recognition, providing scalable pattern matching that maintains cryptographic integrity.</p>
       
@@ -406,6 +460,23 @@ Content-Type: application/json
   "sessionId": "user_session_123"
 }</div>
       
+      <h3>Identity Vector Context</h3>
+      <p>The server uses the identity vector for contextual awareness only - it never modifies the vector:</p>
+      
+      <div class="code-block">// System prompt construction (server-side)
+`Current State:
+- Identity Vector: [${currentState.identityVector.join(', ')}]
+- Mode: ${currentState.mode}
+- Active Protocols: ${currentState.protocols.join(', ')}`
+
+// Vector remains unchanged in response
+{
+  "metadata": {
+    "identityVector": [0.7, 0.6, 0.8, 0.5], // Same as input
+    // ... other metadata
+  }
+}</div>
+      
       <h3>Response Format</h3>
       <div class="code-block">{
   "success": true,
@@ -455,6 +526,9 @@ POST /api/agents      - Multi-agent coordination</div>
       
       <h3>Is this actually measuring uncertainty?</h3>
       <p>Yes, Skyla demonstrates genuine uncertainty quantification through consensus measurement between architecturally different models. Unlike systems using duplicate models, this provides authentic diversity measurement.</p>
+      
+      <h3>How does the AI understand the identity vector?</h3>
+      <p>The server includes the identity vector in the system prompt sent to Claude models, providing contextual awareness of the agent's current state without allowing modification of that state.</p>
       
       <h3>Is the system production-ready?</h3>
       <p>The multi-model consensus system is functional and demonstrates revolutionary AI integrity measurement. However, full cryptographic verification and production APIs are still in development.</p>
