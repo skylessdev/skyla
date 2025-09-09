@@ -84,6 +84,8 @@
     button { padding:12px 24px; background:#1a1a1a; color:#fff; border:none; border-radius:8px; font-size:16px; font-weight:500; cursor:pointer; transition:all 0.2s ease; font-family:inherit; }
     button:hover { background:#333; }
     button:disabled { background:#ccc; cursor:not-allowed; }
+    .test-btn { padding:8px 12px; font-size:12px; background:#666; margin:2px; }
+    .test-btn:hover { background:#888; }
     .state-info { background:#fff; border-radius:12px; padding:20px; margin-top:20px; box-shadow:0 4px 16px rgba(0,0,0,0.06); }
     .current-state { font-size:14px; color:#666; margin-bottom:10px; }
     .vector-display { font-family:'SF Mono', Monaco, monospace; font-size:18px; color:#1a1a1a; background:#f5f4f0; padding:12px; border-radius:6px; letter-spacing:0.5px; }
@@ -125,6 +127,22 @@
     <div class="state-info">
       <div class="current-state">Current Identity Vector:</div>
       <div class="vector-display" id="vector-display">[0.5, 0.5, 0.5, 0.5]</div>
+    </div>
+
+    <!-- Divergence Pattern Testing Section -->
+    <div class="state-info" style="margin-top: 20px;">
+      <div class="current-state">🧪 Divergence Pattern Testing</div>
+      <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
+        <button onclick="runDivergenceTest('genuine_ambiguity')" class="test-btn">Genuine Ambiguity</button>
+        <button onclick="runDivergenceTest('style_difference')" class="test-btn">Style Difference</button>
+        <button onclick="runDivergenceTest('complex_philosophical')" class="test-btn">Complex Philosophical</button>
+        <button onclick="runDivergenceTest('simple_command')" class="test-btn">Simple Command</button>
+        <button onclick="runDivergenceTest('emotional_ambiguity')" class="test-btn">Emotional Ambiguity</button>
+        <button onclick="runDivergenceTest('technical_vs_practical')" class="test-btn">Technical vs Practical</button>
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #666;">
+        These tests validate our theory that topic divergence indicates genuine user ambiguity vs architectural differences.
+      </div>
     </div>
   </div>
 
@@ -449,6 +467,60 @@
     document.getElementById('user-input').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') processInput();
     });
+
+    // Divergence pattern testing function
+    async function runDivergenceTest(testType) {
+      addLogLine('info', `🧪 Running ${testType} divergence test...`);
+      
+      try {
+        const response = await fetch('/api/test-divergence', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ testType })
+        });
+        
+        const result = await response.json();
+        
+        // Display test case info
+        addLogLine('info', `Test input: "${result.testCase.input}"`, {
+          description: result.testCase.description,
+          expectedPattern: result.testCase.expectedPattern
+        });
+        
+        // Display divergence metrics
+        addLogLine('success', 'Divergence analysis complete', {
+          integrityScore: parseFloat(result.results.integrityScore.toFixed(3)),
+          consensusStrength: parseFloat(result.results.consensusStrength.toFixed(3)),
+          action: result.results.action,
+          divergenceMetrics: {
+            lengthVariance: parseFloat(result.results.divergenceMetrics.lengthVariance.toFixed(3)),
+            sentimentDivergence: parseFloat(result.results.divergenceMetrics.sentimentDivergence.toFixed(3)),
+            topicDivergence: parseFloat(result.results.divergenceMetrics.topicDivergence.toFixed(3)),
+            toneConsistency: parseFloat(result.results.divergenceMetrics.toneConsistency.toFixed(3))
+          }
+        });
+        
+        // Display pattern analysis
+        addLogLine('warning', 'Pattern Classification', result.results.divergenceAnalysis);
+        
+        // Display interpretation
+        addLogLine('info', 'Interpretation', {
+          interpretation: result.interpretation.split('\n').filter(line => line.trim())
+        });
+        
+        // Display model responses preview
+        addLogLine('info', 'Model responses preview', {
+          responses: result.results.responses.map(r => ({
+            model: r.model,
+            preview: r.responsePreview,
+            tokens: r.tokens
+          }))
+        });
+        
+      } catch (error) {
+        addLogLine('error', 'Test failed', { error: error.message });
+      }
+    }
 
     // Startup logs + sanity check
     setTimeout(() => {

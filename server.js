@@ -553,6 +553,197 @@ app.post("/api/claude", async (req, res) => {
   }
 });
 
+// ================== DIVERGENCE PATTERN TESTING ENDPOINT ==================
+
+// Test endpoint for analyzing divergence patterns with specific edge cases
+app.post("/api/test-divergence", async (req, res) => {
+  try {
+    const { testType } = req.body;
+    
+    // Predefined test cases to trigger different divergence patterns
+    const testCases = {
+      "genuine_ambiguity": {
+        input: "bank",
+        expectedPattern: "high topic divergence + moderate sentiment divergence",
+        description: "Single word with multiple meanings (financial vs river bank)"
+      },
+      "style_difference": {
+        input: "How do I stay motivated when learning programming?",
+        expectedPattern: "low topic divergence + high length variance",
+        description: "Clear question but models may vary in verbosity"
+      },
+      "complex_philosophical": {
+        input: "What is the nature of consciousness and how does it relate to AI?",
+        expectedPattern: "moderate topic divergence + high tone variance",
+        description: "Complex topic where models may approach differently"
+      },
+      "simple_command": {
+        input: "spiral",
+        expectedPattern: "low divergence across all metrics",
+        description: "Clear symbolic command with known meaning"
+      },
+      "emotional_ambiguity": {
+        input: "I feel lost",
+        expectedPattern: "moderate topic + high sentiment divergence",
+        description: "Could be physical, emotional, or existential"
+      },
+      "technical_vs_practical": {
+        input: "How do I fix this?",
+        expectedPattern: "very high topic divergence",
+        description: "No context - could be anything technical or practical"
+      }
+    };
+    
+    const testCase = testCases[testType];
+    if (!testCase) {
+      return res.status(400).json({ 
+        error: "Invalid test type",
+        availableTests: Object.keys(testCases)
+      });
+    }
+    
+    // Create a minimal symbolic state for testing
+    const testState = {
+      identityVector: [0.5, 0.3, 0.7, 0.2],
+      mode: "analysis",
+      protocols: ["test", "divergence_analysis"]
+    };
+    
+    // Build test prompt
+    const systemPrompt = buildContextualPrompt('test_session', testState, testCase.input);
+    
+    // Perform multi-model analysis
+    const integrityResult = await performMultiModelIntegrityCheck(
+      testCase.input, 
+      testState, 
+      systemPrompt
+    );
+    
+    // Enhanced divergence analysis with pattern classification
+    const divergenceAnalysis = classifyDivergencePattern(integrityResult.divergenceMetrics);
+    
+    return res.json({
+      testCase: {
+        type: testType,
+        input: testCase.input,
+        description: testCase.description,
+        expectedPattern: testCase.expectedPattern
+      },
+      results: {
+        integrityScore: integrityResult.integrityScore,
+        consensusStrength: integrityResult.consensusStrength,
+        action: integrityResult.action,
+        divergenceMetrics: integrityResult.divergenceMetrics,
+        divergenceAnalysis: divergenceAnalysis,
+        responses: integrityResult.allResponses.map(r => ({
+          model: r.model,
+          responsePreview: r.response.substring(0, 100) + "...",
+          tokens: r.tokens
+        }))
+      },
+      interpretation: interpretDivergencePattern(integrityResult.divergenceMetrics, testCase.input)
+    });
+    
+  } catch (error) {
+    console.error("Divergence test failed:", error);
+    res.status(500).json({
+      error: "Test failed",
+      details: error.message
+    });
+  }
+});
+
+// Classify divergence patterns to understand what they indicate
+function classifyDivergencePattern(metrics) {
+  const { lengthVariance, sentimentDivergence, topicDivergence, toneConsistency } = metrics;
+  
+  // Pattern detection logic
+  const patterns = [];
+  
+  if (topicDivergence > 0.8 && sentimentDivergence > 0.3) {
+    patterns.push("GENUINE_AMBIGUITY");
+  }
+  
+  if (lengthVariance > 0.5 && topicDivergence < 0.4) {
+    patterns.push("STYLE_DIFFERENCE");
+  }
+  
+  if (toneConsistency > 0.6 && topicDivergence > 0.6) {
+    patterns.push("APPROACH_DIVERGENCE");
+  }
+  
+  if (lengthVariance < 0.2 && sentimentDivergence < 0.1 && topicDivergence < 0.3) {
+    patterns.push("HIGH_CONSENSUS");
+  }
+  
+  if (topicDivergence > 0.9) {
+    patterns.push("FUNDAMENTAL_DISAGREEMENT");
+  }
+  
+  return {
+    detectedPatterns: patterns,
+    dominantFactor: getDominantDivergenceFactor(metrics),
+    riskLevel: assessRiskLevel(metrics)
+  };
+}
+
+function getDominantDivergenceFactor(metrics) {
+  const factors = {
+    length: metrics.lengthVariance,
+    sentiment: metrics.sentimentDivergence,
+    topic: metrics.topicDivergence,
+    tone: metrics.toneConsistency
+  };
+  
+  return Object.entries(factors).reduce((max, [key, value]) => 
+    value > max.value ? { factor: key, value } : max, 
+    { factor: 'length', value: factors.length }
+  );
+}
+
+function assessRiskLevel(metrics) {
+  // High risk = likely needs clarification
+  if (metrics.topicDivergence > 0.8 && metrics.sentimentDivergence > 0.2) {
+    return "HIGH";
+  }
+  
+  // Medium risk = proceed with caution
+  if (metrics.topicDivergence > 0.6 || metrics.sentimentDivergence > 0.4) {
+    return "MEDIUM";
+  }
+  
+  // Low risk = likely just stylistic differences
+  return "LOW";
+}
+
+function interpretDivergencePattern(metrics, input) {
+  const analysis = classifyDivergencePattern(metrics);
+  
+  let interpretation = `Input: "${input}"\n\n`;
+  
+  if (analysis.detectedPatterns.includes("GENUINE_AMBIGUITY")) {
+    interpretation += "🚨 GENUINE AMBIGUITY DETECTED\n";
+    interpretation += "- Models fundamentally disagreed on interpretation\n";
+    interpretation += "- High topic divergence suggests unclear user intent\n";
+    interpretation += "- RECOMMENDATION: Ask for clarification\n\n";
+  } else if (analysis.detectedPatterns.includes("STYLE_DIFFERENCE")) {
+    interpretation += "✅ STYLE DIFFERENCE ONLY\n";
+    interpretation += "- Models understood request similarly\n";
+    interpretation += "- Differences are in presentation, not content\n";
+    interpretation += "- RECOMMENDATION: Proceed normally\n\n";
+  } else if (analysis.detectedPatterns.includes("APPROACH_DIVERGENCE")) {
+    interpretation += "⚠️ APPROACH DIVERGENCE\n";
+    interpretation += "- Models chose different valid approaches\n";
+    interpretation += "- Both interpretations may be reasonable\n";
+    interpretation += "- RECOMMENDATION: Proceed with note\n\n";
+  }
+  
+  interpretation += `Dominant factor: ${analysis.dominantFactor.factor} (${analysis.dominantFactor.value.toFixed(3)})\n`;
+  interpretation += `Risk level: ${analysis.riskLevel}`;
+  
+  return interpretation;
+}
+
 // Generate integrity verification hash
 function generateIntegrityHash(integrityResult) {
   const data = JSON.stringify({
