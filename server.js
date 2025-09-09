@@ -327,14 +327,15 @@ function assessEpistemicUncertainty(input, divergenceMetrics) {
   const inputText = input.toLowerCase().trim();
   const inputLength = input.split(' ').length;
   
-  // Pattern 1: Maximum disagreement (1.0) + no specific context
-  if (topicDivergence >= 0.99) {
+  // Pattern 1: High divergence (>0.8) + no specific context patterns
+  if (topicDivergence >= 0.8) {
     // Check for context-free patterns that cause genuine confusion
     const noContextPatterns = [
       /^(how do i fix|fix|help|what|why|when|where).*this\??$/,  // "fix this", "what is this"
       /^(it|that|this)$/,  // Single pronouns with no context
       /^(bank|run|left|right|code|app)$/,  // Ambiguous single words
-      /^(broken|error|issue|problem)$/  // Problem words without specifics
+      /^(broken|error|issue|problem)$/,  // Problem words without specifics
+      /^(how|what|why|when|where)\??$/   // Single question words
     ];
     
     const hasNoContext = noContextPatterns.some(pattern => pattern.test(inputText));
@@ -342,10 +343,10 @@ function assessEpistemicUncertainty(input, divergenceMetrics) {
     if (hasNoContext || inputLength <= 3) {
       return {
         requiresClarification: true,
-        reason: "MAXIMUM_DIVERGENCE_NO_CONTEXT",
-        clarificationRequest: `I notice the models showed maximum disagreement (${(topicDivergence * 100).toFixed(0)}% topic divergence) about how to interpret "${input}". This suggests your request could mean several different things. Could you provide more specific details about what you're looking for?`,
+        reason: "HIGH_DIVERGENCE_NO_CONTEXT",
+        clarificationRequest: `I notice significant model disagreement (${(topicDivergence * 100).toFixed(0)}% topic divergence) about how to interpret "${input}". This suggests your request could mean several different things. Could you provide more specific details about what you're looking for?`,
         confidence: 0.9,
-        triggerPattern: "maximum_topic_divergence_with_ambiguous_context"
+        triggerPattern: "high_topic_divergence_with_ambiguous_context"
       };
     }
   }
