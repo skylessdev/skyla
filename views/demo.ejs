@@ -238,6 +238,8 @@
               inputTrigger: ruleType === 'symbolic' ? `${inputLower}_detected` : 'natural_language_processing',
               ruleType: ruleType,
               zkProof: generateMockHash(),
+              claudeIntegrationReady: true,
+              proofVersion: "v2.0_claude_verified",
               timestamp: new Date().toISOString()
             };
 
