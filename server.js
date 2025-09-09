@@ -319,6 +319,69 @@ function analyzeQueryComplexity(input) {
   return { complexity, type, favorEfficiency, favorNuance };
 }
 
+// Epistemic uncertainty assessment - refined based on test data
+function assessEpistemicUncertainty(input, divergenceMetrics) {
+  const { lengthVariance, sentimentDivergence, topicDivergence, toneConsistency } = divergenceMetrics;
+  
+  // Based on testing: topic divergence >0.9 is normal, but 1.0 + context clues = genuine ambiguity
+  const inputText = input.toLowerCase().trim();
+  const inputLength = input.split(' ').length;
+  
+  // Pattern 1: Maximum disagreement (1.0) + no specific context
+  if (topicDivergence >= 0.99) {
+    // Check for context-free patterns that cause genuine confusion
+    const noContextPatterns = [
+      /^(how do i fix|fix|help|what|why|when|where).*this\??$/,  // "fix this", "what is this"
+      /^(it|that|this)$/,  // Single pronouns with no context
+      /^(bank|run|left|right|code|app)$/,  // Ambiguous single words
+      /^(broken|error|issue|problem)$/  // Problem words without specifics
+    ];
+    
+    const hasNoContext = noContextPatterns.some(pattern => pattern.test(inputText));
+    
+    if (hasNoContext || inputLength <= 3) {
+      return {
+        requiresClarification: true,
+        reason: "MAXIMUM_DIVERGENCE_NO_CONTEXT",
+        clarificationRequest: `I notice the models showed maximum disagreement (${(topicDivergence * 100).toFixed(0)}% topic divergence) about how to interpret "${input}". This suggests your request could mean several different things. Could you provide more specific details about what you're looking for?`,
+        confidence: 0.9,
+        triggerPattern: "maximum_topic_divergence_with_ambiguous_context"
+      };
+    }
+  }
+  
+  // Pattern 2: Multiple ambiguity indicators combined
+  if (topicDivergence > 0.95 && sentimentDivergence > 0.2) {
+    return {
+      requiresClarification: true,
+      reason: "COMBINED_HIGH_DIVERGENCE",
+      clarificationRequest: `The models showed significant disagreement on both the topic approach (${(topicDivergence * 100).toFixed(0)}% divergence) and emotional interpretation of "${input}". To provide the most helpful response, could you clarify what specific outcome you're looking for?`,
+      confidence: 0.7,
+      triggerPattern: "topic_plus_sentiment_divergence"
+    };
+  }
+  
+  // Pattern 3: Extremely short input with high divergence  
+  if (inputLength === 1 && topicDivergence > 0.9) {
+    return {
+      requiresClarification: true,
+      reason: "SINGLE_WORD_HIGH_DIVERGENCE",
+      clarificationRequest: `The single word "${input}" could mean many different things in this context. Could you provide more details about what you're asking or what you'd like me to help you with?`,
+      confidence: 0.8,
+      triggerPattern: "single_word_maximum_ambiguity"
+    };
+  }
+  
+  // Pattern 4: No genuine epistemic uncertainty detected
+  return {
+    requiresClarification: false,
+    reason: "NORMAL_ARCHITECTURAL_DIFFERENCE",
+    confidence: 0.9,
+    analysis: `Topic divergence of ${topicDivergence.toFixed(3)} appears to be normal architectural difference between models, not genuine user ambiguity`,
+    triggerPattern: "proceed_normally"
+  };
+}
+
 // Multi-model consensus system
 async function performMultiModelIntegrityCheck(input, currentState, systemPrompt) {
   const models = [
@@ -484,7 +547,32 @@ app.post("/api/claude", async (req, res) => {
       }
     );
 
-    // Handle response based on integrity level
+    // EPISTEMIC GATE: Check for genuine ambiguity before proceeding
+    const epistemicGateResult = assessEpistemicUncertainty(input, integrityResult.divergenceMetrics);
+    
+    if (epistemicGateResult.requiresClarification) {
+      // High epistemic uncertainty detected - ask for clarification
+      res.json({
+        success: true,
+        response: epistemicGateResult.clarificationRequest,
+        integrity: "epistemic_gate",
+        clarificationNeeded: true,
+        epistemicReason: epistemicGateResult.reason,
+        metadata: {
+          model: "epistemic_analysis",
+          integrityScore: integrityResult.integrityScore,
+          consensusStrength: integrityResult.consensusStrength,
+          divergenceMetrics: integrityResult.divergenceMetrics,
+          epistemicAnalysis: epistemicGateResult,
+          enhancedProof: enhancedProof,
+          contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
+          timestamp: new Date().toISOString()
+        }
+      });
+      return;
+    }
+
+    // Proceed with normal integrity-based response handling
     switch (integrityResult.action) {
       case 'proceed': // High integrity (>0.8)
         res.json({
@@ -497,6 +585,7 @@ app.post("/api/claude", async (req, res) => {
             integrityScore: integrityResult.integrityScore,
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
+            epistemicAnalysis: epistemicGateResult,
             enhancedProof: enhancedProof,
             contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             timestamp: new Date().toISOString()
@@ -516,6 +605,7 @@ app.post("/api/claude", async (req, res) => {
             integrityScore: integrityResult.integrityScore,
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
+            epistemicAnalysis: epistemicGateResult,
             enhancedProof: enhancedProof,
             contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             fallback: integrityResult.fallback || false,
@@ -524,7 +614,7 @@ app.post("/api/claude", async (req, res) => {
         });
         break;
         
-      case 'clarify': // Low integrity (<0.5)
+      case 'clarify': // Low integrity (<0.5) - legacy fallback
         res.json({
           success: true,
           response: `I'm detecting significant uncertainty in how to respond to "${input}". The models show ${(integrityResult.consensusStrength * 100).toFixed(0)}% consensus. Could you be more specific about what you're looking for?`,
@@ -535,6 +625,7 @@ app.post("/api/claude", async (req, res) => {
             integrityScore: integrityResult.integrityScore,
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
+            epistemicAnalysis: epistemicGateResult,
             enhancedProof: enhancedProof,
             contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             timestamp: new Date().toISOString()
