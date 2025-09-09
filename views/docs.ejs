@@ -404,20 +404,42 @@ return currentVec.map((v, i) => clamp01(v + deltas[i]));</div>
       <h3>Scaling Properties</h3>
       <p>The semantic engine scales infinitely without rule explosion by allowing new regex patterns to be added without touching core logic. Every transition type (symbolic, semantic, or hash-based) generates valid ZK proofs maintaining cryptographic integrity.</p>
       
-      <h2 id="symbolic-imprint">Symbolic imprint</h2>
-      <p>The symbolic imprint defines the core structure of an agent's identity and behavior patterns. It consists of several key components that determine how the agent processes information and makes decisions.</p>
+      <h2 id="symbolic-imprint">Identity Vector Architecture</h2>
+      <p>The Identity Vector System defines the mathematical foundation of Skyla's state management. This 4-dimensional vector space enables precise, deterministic state transitions while maintaining cryptographic verifiability.</p>
       
-      <img class="docs-image" src="/assets/symbolic-imprint.png" alt="Symbolic imprint schema" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-      <div class="image-placeholder" style="display: none;">Symbolic Imprint Schema (Conceptual Design)</div>
+      <img class="docs-image" src="/assets/symbolic-imprint.png" alt="Identity vector system architecture" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="image-placeholder" style="display: none;">Identity Vector System (4D State Space)</div>
       
-      <h3>Schema Structure</h3>
+      <h3>Vector Structure</h3>
       <div class="code-block">{
-  "intentional_stance": "What the AI is trying to do",
-  "meta_awareness": "Whether AI recognizes its own behavior", 
-  "affective_tone": "Emotional valence implied",
-  "symbolic_markers": "[aligned], 'empathy'] guidance",
-  "proof_input": "What is used for verification"
+  "identityVector": [0.70, 0.60, 0.80, 0.50],
+  "dimensions": {
+    "cognitive": 0.70,    // Analytical thinking & reasoning
+    "emotional": 0.60,    // Sentiment & affective responses  
+    "adaptive": 0.80,     // Flexibility & learning capability
+    "coherence": 0.50     // Consistency & structural integrity
+  },
+  "mode": "adaptive",     // Determined by dominant dimension
+  "protocols": ["tone_guard", "emotional_stabilizer"]
 }</div>
+      
+      <h3>State Transition Mechanics</h3>
+      <p>The system uses three-layer processing to ensure deterministic, mathematically consistent state changes:</p>
+      <ul>
+        <li><strong>Symbolic Rules:</strong> Direct pattern matching for commands like "spiral", "daemon", "build"</li>
+        <li><strong>Semantic Patterns:</strong> Regex-based categorization with precise mathematical deltas</li>
+        <li><strong>Hash Fallback:</strong> Deterministic micro-adjustments (±0.05) for unknown inputs</li>
+      </ul>
+      
+      <h3>Mode Transitions</h3>
+      <div class="code-block">// Mode determined by dominant dimension
+if (cognitive > others) → mode: "analytical"
+if (emotional > others) → mode: "creative"  
+if (adaptive > others) → mode: "adaptive"
+if (coherence > others) → mode: "coherent"
+
+// All transitions generate cryptographic proofs
+stateHash = generateHash(identityVector + timestamp + inputTrigger)</div>
       
       <h2 id="state-proofs">State & proofs</h2>
       <p>Every state transition in Skyla generates a cryptographic proof that can be independently verified. This ensures complete transparency and auditability of agent behavior.</p>
