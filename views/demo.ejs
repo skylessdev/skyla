@@ -87,14 +87,13 @@
     .test-btn:hover { background:#888; }
     .state-info { background:#fff; border-radius:12px; padding:20px; margin-top:20px; box-shadow:0 4px 16px rgba(0,0,0,0.06); }
     .current-state { font-size:14px; color:#666; margin-bottom:10px; }
-    .vector-display { font-family:'SF Mono', Monaco, monospace; font-size:18px; color:#1a1a1a; background:#f5f4f0; padding:12px; border-radius:6px; letter-spacing:0.5px; }
+    .vector-display { font-family:'SF Mono', Monaco, monospace; font-size:18px; color:#1a1a1a; background:#f5f4f0; padding:12px; border-radius:6px; letter-spacing:0.5px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     
-    /* Ultra-compact vector bars */
+    /* Ultra-compact vector bars - inline with numbers */
     .vector-compact {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
+      gap: 8px;
       font-size: 11px;
     }
     
@@ -113,17 +112,17 @@
     }
     
     .micro-bar {
-      width: 20px;
-      height: 3px;
+      width: 24px;
+      height: 4px;
       background: #e5e5e5;
-      border-radius: 1.5px;
+      border-radius: 2px;
       overflow: hidden;
     }
     
     .micro-bar-fill {
       height: 100%;
       background: #4a9eff;
-      border-radius: 1.5px;
+      border-radius: 2px;
       transition: width 0.3s ease;
     }
     
@@ -172,8 +171,9 @@
 
     <div class="state-info">
       <div class="current-state">Current Identity Vector:</div>
-      <div class="vector-display" id="vector-display">[0.5, 0.5, 0.5, 0.5]</div>
-      <div class="vector-compact" id="vector-compact">
+      <div class="vector-display" id="vector-display">
+        <span id="vector-numbers">[0.5, 0.5, 0.5, 0.5]</span>
+        <div class="vector-compact" id="vector-compact">
         <div class="vector-item">
           <span class="vector-label">C</span>
           <div class="micro-bar"><div class="micro-bar-fill" style="width: 50%"></div></div>
@@ -245,7 +245,7 @@
     function updateVectorDisplay(vector) {
       const labels = ['C', 'E', 'A', 'Co'];
       
-      document.getElementById('vector-display').textContent = 
+      document.getElementById('vector-numbers').textContent = 
         `[${vector.map(v => v.toFixed(2)).join(', ')}]`;
       
       const compactHtml = vector.map((value, i) => 
