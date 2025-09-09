@@ -142,9 +142,15 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
   ];
   
   try {
-    // Generate responses from all models in parallel
-    const responses = await Promise.all(
-      models.map(async (model) => {
+    // Generate responses from all models in parallel with detailed error handling
+    console.log(`🔄 Starting multi-model integrity check with models: ${models.join(', ')}`);
+    
+    // Try sequential calls instead of parallel to avoid rate limits
+    const responses = [];
+    for (let i = 0; i < models.length; i++) {
+      const model = models[i];
+      try {
+        console.log(`📤 Calling ${model} (${i + 1}/${models.length})...`);
         const message = await anthropic.messages.create({
           model: model,
           max_tokens: 150,
@@ -157,13 +163,29 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
           ]
         });
         
-        return {
+        console.log(`✅ ${model} success: ${message.usage.output_tokens} tokens`);
+        responses.push({
           model: model,
           response: message.content[0].text,
           tokens: message.usage.output_tokens
-        };
-      })
-    );
+        });
+        
+        // Small delay between calls to respect rate limits
+        if (i < models.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      } catch (modelError) {
+        console.log(`❌ ${model} failed:`, modelError.message, `Status: ${modelError.status || 'unknown'}`);
+        // Continue with other models instead of failing completely
+      }
+    }
+    
+    // Require at least one successful response
+    if (responses.length === 0) {
+      throw new Error('All models failed - falling back to single model');
+    }
+    
+    console.log(`🎯 Multi-model completed: ${responses.length}/${models.length} models succeeded`);
     
     // Calculate divergence metrics
     const responseTexts = responses.map(r => r.response);
