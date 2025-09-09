@@ -200,48 +200,123 @@ function computeOverallIntegrity(metrics) {
   return Math.max(0, Math.min(1, 1 - divergenceScore));
 }
 
-// Fair consensus-based response selection (no model bias)
-function selectBestConsensusResponse(responses, divergenceMetrics) {
+// Advanced architectural consensus selection system
+function selectBestConsensusResponse(responses, divergenceMetrics, input = '') {
   if (responses.length <= 1) return responses[0];
   
-  // Calculate consensus quality score for each response
+  // Analyze query complexity and type
+  const queryAnalysis = analyzeQueryComplexity(input);
+  
+  // Calculate sophisticated quality scores for each response
   const responseScores = responses.map((response, index) => {
-    // Factors for quality assessment:
-    // 1. Length appropriateness (not too short, not too verbose)
-    const idealLength = 100; // tokens
-    const lengthScore = 1 - Math.abs(response.tokens - idealLength) / idealLength;
+    // 1. Adaptive length scoring based on query complexity
+    const optimalLength = queryAnalysis.complexity === 'high' ? 140 : 
+                         queryAnalysis.complexity === 'medium' ? 100 : 60;
+    const lengthScore = Math.max(0, 1 - Math.abs(response.tokens - optimalLength) / optimalLength);
     
-    // 2. Semantic richness (key terms count)
-    const keyTerms = (response.response.match(/\w{4,}/g) || []).length;
-    const richnessScore = Math.min(1, keyTerms / 20);
+    // 2. Nuance detection (philosophical concepts, abstractions)
+    const nuanceTerms = (response.response.match(/\b(consciousness|philosophy|abstract|complex|nuanced|sophisticated|conceptual|theoretical)\b/gi) || []).length;
+    const nuanceScore = Math.min(1, nuanceTerms / 3);
     
-    // 3. Coherence and structure (sentences, punctuation)
+    // 3. Efficiency indicators (conciseness, directness)
+    const efficiencyWords = (response.response.match(/\b(simply|basically|essentially|directly|clearly|straightforward)\b/gi) || []).length;
+    const efficiencyScore = Math.min(1, efficiencyWords / 2);
+    
+    // 4. Semantic richness (varied vocabulary)
+    const uniqueWords = new Set(response.response.toLowerCase().match(/\w{4,}/g) || []);
+    const richnessScore = Math.min(1, uniqueWords.size / 25);
+    
+    // 5. Structural coherence (proper punctuation, complete sentences)
     const sentences = (response.response.match(/[.!?]+/g) || []).length;
-    const structureScore = Math.min(1, sentences / 3);
+    const coherenceScore = Math.min(1, sentences / 4);
     
-    // Weighted composite score
+    // Architectural preference based on query type
+    const isHaiku = response.model.includes('haiku');
+    const isSonnet = response.model.includes('sonnet');
+    
+    let architecturalBonus = 0;
+    if (queryAnalysis.favorEfficiency && isHaiku) {
+      architecturalBonus = 0.1; // Boost Haiku for simple queries
+    } else if (queryAnalysis.favorNuance && isSonnet) {
+      architecturalBonus = 0.1; // Boost Sonnet for complex queries
+    }
+    
+    // Dynamic weighted scoring based on query type
+    const weights = queryAnalysis.complexity === 'high' ? 
+      { length: 0.15, nuance: 0.35, efficiency: 0.05, richness: 0.25, coherence: 0.20 } :
+      { length: 0.20, nuance: 0.10, efficiency: 0.30, richness: 0.20, coherence: 0.20 };
+    
     const qualityScore = 
-      lengthScore * 0.3 + 
-      richnessScore * 0.4 + 
-      structureScore * 0.3;
+      lengthScore * weights.length + 
+      nuanceScore * weights.nuance + 
+      efficiencyScore * weights.efficiency + 
+      richnessScore * weights.richness + 
+      coherenceScore * weights.coherence + 
+      architecturalBonus;
     
-    console.log(`🎯 ${response.model}: Quality=${qualityScore.toFixed(3)} (length=${lengthScore.toFixed(2)}, richness=${richnessScore.toFixed(2)}, structure=${structureScore.toFixed(2)})`);
+    console.log(`🎯 ${response.model}: Quality=${qualityScore.toFixed(3)} (length=${lengthScore.toFixed(2)}, nuance=${nuanceScore.toFixed(2)}, efficiency=${efficiencyScore.toFixed(2)}, richness=${richnessScore.toFixed(2)}, coherence=${coherenceScore.toFixed(2)}, bonus=${architecturalBonus.toFixed(2)})`);
     
     return {
       response: response,
       qualityScore: qualityScore,
-      selectionReason: `Quality score: ${qualityScore.toFixed(3)}`
+      selectionReason: `Quality: ${qualityScore.toFixed(3)} | ${queryAnalysis.type} query`
     };
   });
   
-  // Select response with highest consensus quality
-  const bestResponse = responseScores.reduce((best, current) => 
-    current.qualityScore > best.qualityScore ? current : best
-  );
+  // Find highest score
+  const maxScore = Math.max(...responseScores.map(r => r.qualityScore));
+  const topResponses = responseScores.filter(r => Math.abs(r.qualityScore - maxScore) < 0.001);
+  
+  // True tie-breaking with randomization
+  let bestResponse;
+  if (topResponses.length > 1) {
+    const randomIndex = Math.floor(Math.random() * topResponses.length);
+    bestResponse = topResponses[randomIndex];
+    console.log(`🎲 Tie detected (${topResponses.length} models), randomly selected: ${bestResponse.response.model}`);
+  } else {
+    bestResponse = topResponses[0];
+  }
   
   console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}`);
   
   return bestResponse.response;
+}
+
+// Query complexity analysis for architectural selection
+function analyzeQueryComplexity(input) {
+  const lowerInput = input.toLowerCase();
+  
+  // Complexity indicators
+  const complexTerms = ['philosophy', 'consciousness', 'analysis', 'theoretical', 'abstract', 'nuanced', 'sophisticated', 'complex', 'detailed'];
+  const simpleTerms = ['hi', 'hello', 'what', 'how', 'yes', 'no', 'ok', 'spiral', 'basic'];
+  
+  const complexCount = complexTerms.filter(term => lowerInput.includes(term)).length;
+  const simpleCount = simpleTerms.filter(term => lowerInput.includes(term)).length;
+  const wordCount = input.split(' ').length;
+  
+  // Determine complexity level
+  let complexity, type, favorEfficiency, favorNuance;
+  
+  if (complexCount > 0 || wordCount > 10) {
+    complexity = 'high';
+    type = 'analytical';
+    favorEfficiency = false;
+    favorNuance = true;
+  } else if (simpleCount > 0 || wordCount <= 3) {
+    complexity = 'low';
+    type = 'simple';
+    favorEfficiency = true;
+    favorNuance = false;
+  } else {
+    complexity = 'medium';
+    type = 'balanced';
+    favorEfficiency = false;
+    favorNuance = false;
+  }
+  
+  console.log(`🧠 Query analysis: "${input}" → ${complexity} complexity (${type})`);
+  
+  return { complexity, type, favorEfficiency, favorNuance };
 }
 
 // Multi-model consensus system
@@ -261,9 +336,13 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
       const model = models[i];
       try {
         console.log(`📤 Calling ${model} (${i + 1}/${models.length})...`);
+        // Dynamic token allocation based on input complexity
+        const inputLength = input.length;
+        const dynamicTokens = inputLength > 100 ? 200 : inputLength > 50 ? 150 : 100;
+        
         const message = await anthropic.messages.create({
           model: model,
-          max_tokens: 150,
+          max_tokens: dynamicTokens,
           system: systemPrompt,
           messages: [
             {
@@ -309,8 +388,8 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
     // Compute overall integrity score
     const integrityScore = computeOverallIntegrity(divergenceMetrics);
     
-    // Select primary response based on consensus quality (no bias)
-    const primaryResponse = selectBestConsensusResponse(responses, divergenceMetrics);
+    // Select primary response based on architectural consensus analysis
+    const primaryResponse = selectBestConsensusResponse(responses, divergenceMetrics, input);
     
     return {
       success: true,
