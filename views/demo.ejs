@@ -444,6 +444,12 @@
                       addLogLine('info', 'Enhanced state transition complete', {
                         mode: mode, tone: tone, activeProtocols: protocols,
                         identityVector: newVector.map(v => parseFloat(v.toFixed(2))),
+                        identityVectorLabeled: {
+                          cognitive: parseFloat(newVector[0].toFixed(2)),
+                          emotional: parseFloat(newVector[1].toFixed(2)),
+                          adaptive: parseFloat(newVector[2].toFixed(2)),
+                          coherence: parseFloat(newVector[3].toFixed(2))
+                        },
                         integrityVerification: 'cryptographically_verified',
                         proofVersion: data.metadata.enhancedProof?.proofVersion || 'v3.0_multi_model_verified'
                       });
