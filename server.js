@@ -200,12 +200,55 @@ function computeOverallIntegrity(metrics) {
   return Math.max(0, Math.min(1, 1 - divergenceScore));
 }
 
+// Fair consensus-based response selection (no model bias)
+function selectBestConsensusResponse(responses, divergenceMetrics) {
+  if (responses.length <= 1) return responses[0];
+  
+  // Calculate consensus quality score for each response
+  const responseScores = responses.map((response, index) => {
+    // Factors for quality assessment:
+    // 1. Length appropriateness (not too short, not too verbose)
+    const idealLength = 100; // tokens
+    const lengthScore = 1 - Math.abs(response.tokens - idealLength) / idealLength;
+    
+    // 2. Semantic richness (key terms count)
+    const keyTerms = (response.response.match(/\w{4,}/g) || []).length;
+    const richnessScore = Math.min(1, keyTerms / 20);
+    
+    // 3. Coherence and structure (sentences, punctuation)
+    const sentences = (response.response.match(/[.!?]+/g) || []).length;
+    const structureScore = Math.min(1, sentences / 3);
+    
+    // Weighted composite score
+    const qualityScore = 
+      lengthScore * 0.3 + 
+      richnessScore * 0.4 + 
+      structureScore * 0.3;
+    
+    console.log(`🎯 ${response.model}: Quality=${qualityScore.toFixed(3)} (length=${lengthScore.toFixed(2)}, richness=${richnessScore.toFixed(2)}, structure=${structureScore.toFixed(2)})`);
+    
+    return {
+      response: response,
+      qualityScore: qualityScore,
+      selectionReason: `Quality score: ${qualityScore.toFixed(3)}`
+    };
+  });
+  
+  // Select response with highest consensus quality
+  const bestResponse = responseScores.reduce((best, current) => 
+    current.qualityScore > best.qualityScore ? current : best
+  );
+  
+  console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}`);
+  
+  return bestResponse.response;
+}
+
 // Multi-model consensus system
 async function performMultiModelIntegrityCheck(input, currentState, systemPrompt) {
   const models = [
-    "claude-3-haiku-20240307",
-    "claude-3-5-sonnet-20241022", 
-    "claude-3-5-sonnet-20241022"  // Using Sonnet twice since Opus is deprecated
+    "claude-3-haiku-20240307",      // Efficiency-focused: Fast, concise responses
+    "claude-3-5-sonnet-20241022"    // Quality-focused: Nuanced, detailed responses
   ];
   
   try {
@@ -252,7 +295,7 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
       throw new Error('All models failed - falling back to single model');
     }
     
-    console.log(`🎯 Multi-model completed: ${responses.length}/${models.length} models succeeded`);
+    console.log(`🎯 2-model consensus completed: ${responses.length}/${models.length} models succeeded`);
     
     // Calculate divergence metrics
     const responseTexts = responses.map(r => r.response);
@@ -266,8 +309,8 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
     // Compute overall integrity score
     const integrityScore = computeOverallIntegrity(divergenceMetrics);
     
-    // Select primary response (prefer Sonnet for balance)
-    const primaryResponse = responses.find(r => r.model.includes('sonnet')) || responses[0];
+    // Select primary response based on consensus quality (no bias)
+    const primaryResponse = selectBestConsensusResponse(responses, divergenceMetrics);
     
     return {
       success: true,

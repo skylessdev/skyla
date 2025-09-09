@@ -288,7 +288,7 @@
 
             // Add Multi-Model Claude processing
             setTimeout(() => {
-              addLogLine('info', 'Initiating multi-model integrity analysis...');
+              addLogLine('info', 'Initiating 2-model consensus analysis...');
               
               // Send to Claude API
               fetch('/api/claude', {
@@ -310,11 +310,12 @@
                   const consensusPercent = Math.round(integrityScore * 100);
                   
                   setTimeout(() => {
-                    addLogLine('success', 'Multi-model consensus analysis complete', {
+                    addLogLine('success', '2-model consensus analysis complete', {
                       integrityScore: integrityScore.toFixed(3),
                       consensusStrength: `${consensusPercent}%`,
                       modelsUsed: data.metadata.enhancedProof?.modelsUsed || ['claude-3-haiku'],
-                      divergenceMetrics: data.metadata.divergenceMetrics
+                      divergenceMetrics: data.metadata.divergenceMetrics,
+                      architecture: 'Haiku vs Sonnet'
                     });
                   }, 600);
                   
@@ -446,13 +447,14 @@
         setTimeout(() => {
           addLogLine('success', 'Multi-model integrity system active');
           setTimeout(() => {
-            addLogLine('info', 'Delta divergence analysis enabled', {
-              models: ['claude-3-haiku', 'claude-3-sonnet', 'claude-3-opus'],
+            addLogLine('info', '2-model consensus analysis enabled', {
+              models: ['claude-3-haiku', 'claude-3-5-sonnet'],
+              architecture: 'efficiency vs quality focused',
               integrityMetrics: ['length', 'sentiment', 'topic', 'tone'],
               verificationLevel: 'cryptographic'
             });
             setTimeout(() => {
-              addLogLine('info', 'Ready for symbolic input with verifiable consensus');
+              addLogLine('info', 'Ready for symbolic input with true 2-model consensus');
               // Sanity: prove function exists at runtime
               addLogLine('info', 'System status', { 
                 typeof_calculateSemanticTransition: typeof calculateSemanticTransition,
