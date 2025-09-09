@@ -295,7 +295,9 @@ function selectBestConsensusResponse(responses, divergenceMetrics, input = '') {
   console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}`);
   console.log(`🔢 Mathematical reasoning: ${selectionContext}`);
   if (bestResponse.architecturalBonus > 0) {
-    console.log(`⚡ Efficiency bonus applied: ${queryAnalysis.type} query type favored ${bestResponse.response.model}`);
+    const isHaiku = bestResponse.response.model.includes('haiku');
+    const bonusType = isHaiku ? 'Efficiency' : 'Nuance';
+    console.log(`⚡ ${bonusType} bonus applied: ${queryAnalysis.type} query type favored ${bestResponse.response.model}`);
   }
   
   return bestResponse.response;
