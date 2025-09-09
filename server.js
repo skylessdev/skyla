@@ -137,8 +137,8 @@ function computeOverallIntegrity(metrics) {
 async function performMultiModelIntegrityCheck(input, currentState, systemPrompt) {
   const models = [
     "claude-3-haiku-20240307",
-    "claude-3-sonnet-20240229", 
-    "claude-3-opus-20240229"
+    "claude-3-5-sonnet-20241022", 
+    "claude-3-5-sonnet-20241022"  // Using Sonnet twice since Opus is deprecated
   ];
   
   try {
@@ -209,10 +209,17 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
     return {
       success: true,
       integrityScore: 0.5, // Unknown integrity
+      consensusStrength: 0.5, // Fallback consensus
       primaryResponse: {
         model: "claude-3-haiku-20240307",
         response: fallbackMessage.content[0].text,
         tokens: fallbackMessage.usage.output_tokens
+      },
+      divergenceMetrics: {
+        lengthVariance: 0,
+        sentimentDivergence: 0,
+        topicDivergence: 0,
+        toneConsistency: 0
       },
       fallback: true,
       action: 'proceed_with_note'
