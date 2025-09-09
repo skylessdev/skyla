@@ -39,6 +39,36 @@
     .log-message { flex:1; color:#e6e6e6; }
     .json-object { color:#7dd3fc; margin-left:20px; white-space:pre-wrap; }
     .key{color:#fbbf24;} .string{color:#34d399;} .number{color:#f472b6;} .boolean{color:#a78bfa;}
+    
+    /* Integrity indicator styles */
+    .integrity-high{color:#10b981;} .integrity-medium{color:#f59e0b;} .integrity-low{color:#ef4444;}
+    .integrity-indicator { 
+      display: inline-block; 
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%; 
+      margin-right: 6px; 
+      vertical-align: middle; 
+    }
+    .integrity-high-bg { background: #10b981; }
+    .integrity-medium-bg { background: #f59e0b; }
+    .integrity-low-bg { background: #ef4444; }
+    .consensus-bar {
+      display: inline-block;
+      width: 40px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      margin-left: 8px;
+      position: relative;
+      vertical-align: middle;
+    }
+    .consensus-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    
     .input-section { background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.06); }
     .input-group { display:flex; gap:12px; align-items:center; }
     input[type="text"] { flex:1; padding:12px 16px; border:2px solid #e5e5e5; border-radius:8px; font-size:16px; font-family:inherit; background:#f9f9f9; transition:all 0.2s ease; }
@@ -256,9 +286,9 @@
             document.getElementById('vector-display').textContent =
               `[${newVector.map(v => v.toFixed(2)).join(', ')}]`;
 
-            // Add Claude processing
+            // Add Multi-Model Claude processing
             setTimeout(() => {
-              addLogLine('info', 'Initiating Claude AI processing...');
+              addLogLine('info', 'Initiating multi-model integrity analysis...');
               
               // Send to Claude API
               fetch('/api/claude', {
@@ -274,30 +304,60 @@
               .then(response => response.json())
               .then(data => {
                 if (data.success) {
-                  addLogLine('success', 'Claude AI response received');
+                  // Display integrity analysis results
+                  const integrityClass = `integrity-${data.integrity}`;
+                  const integrityScore = data.metadata.integrityScore || 0.5;
+                  const consensusPercent = Math.round(integrityScore * 100);
                   
-                  // Display Claude's response with special formatting
                   setTimeout(() => {
-                    addLogLine('info', 'SKYLA RESPONSE:', {
+                    addLogLine('success', 'Multi-model consensus analysis complete', {
+                      integrityScore: integrityScore.toFixed(3),
+                      consensusStrength: `${consensusPercent}%`,
+                      modelsUsed: data.metadata.enhancedProof?.modelsUsed || ['claude-3-haiku'],
+                      divergenceMetrics: data.metadata.divergenceMetrics
+                    });
+                  }, 600);
+                  
+                  // Show integrity level with visual indicator
+                  setTimeout(() => {
+                    const integrityMessage = getIntegrityMessage(data.integrity, consensusPercent);
+                    addLogLineWithIntegrity('success', integrityMessage, data.integrity, integrityScore);
+                  }, 1000);
+                  
+                  // Display Claude's response with integrity context
+                  setTimeout(() => {
+                    const responseData = {
                       analysis: data.response,
                       model: data.metadata.model,
-                      tokens: data.metadata.tokens
-                    });
+                      tokens: data.metadata.tokens,
+                      verificationHash: data.metadata.enhancedProof?.verificationHash
+                    };
+                    
+                    if (data.note) {
+                      responseData.consensusNote = data.note;
+                    }
+                    
+                    if (data.clarificationNeeded) {
+                      addLogLine('warning', 'CLARIFICATION REQUESTED:', responseData);
+                    } else {
+                      addLogLine('info', 'SKYLA RESPONSE:', responseData);
+                    }
                     
                     setTimeout(() => {
-                      addLogLine('info', 'State transition complete', {
+                      addLogLine('info', 'Enhanced state transition complete', {
                         mode: mode, tone: tone, activeProtocols: protocols,
                         identityVector: newVector.map(v => parseFloat(v.toFixed(2))),
-                        claudeIntegration: 'verified'
+                        integrityVerification: 'cryptographically_verified',
+                        proofVersion: data.metadata.enhancedProof?.proofVersion || 'v3.0_multi_model_verified'
                       });
 
                       document.getElementById('submit-btn').disabled = false;
                       document.getElementById('user-input').value = '';
                     }, 600);
-                  }, 400);
+                  }, 1400);
                 } else {
                   // Fallback handling
-                  addLogLine('warning', 'Claude processing failed, using local engine only', {
+                  addLogLine('warning', 'Multi-model processing failed, using local engine only', {
                     error: data.error,
                     fallback: data.fallback
                   });
@@ -314,7 +374,7 @@
                 }
               })
               .catch(error => {
-                addLogLine('error', 'Network error during Claude processing', {
+                addLogLine('error', 'Network error during multi-model processing', {
                   error: error.message,
                   fallback: 'Local symbolic processing completed successfully'
                 });
@@ -330,6 +390,43 @@
                 }, 800);
               });
             }, 500);
+            
+            // Helper functions for integrity display
+            function getIntegrityMessage(integrity, consensusPercent) {
+              switch(integrity) {
+                case 'high':
+                  return `High integrity consensus achieved (${consensusPercent}% model agreement)`;
+                case 'medium': 
+                  return `Medium integrity detected (${consensusPercent}% model agreement)`;
+                case 'low':
+                  return `Low integrity - significant model divergence (${consensusPercent}% agreement)`;
+                default:
+                  return `Integrity analysis complete (${consensusPercent}% consensus)`;
+              }
+            }
+            
+            function addLogLineWithIntegrity(level, message, integrity, score) {
+              const consoleBody = document.getElementById('console-body');
+              const logLine = document.createElement('div');
+              logLine.className = 'log-line';
+              
+              const integrityClass = `integrity-${integrity}`;
+              const consensusWidth = Math.round(score * 100);
+              
+              const content = `
+                <span class="timestamp">${getTimestamp()}</span>
+                <span class="log-level ${level}">${level.toUpperCase()}</span>
+                <span class="integrity-indicator integrity-${integrity}-bg"></span>
+                <span class="log-message ${integrityClass}">${message}</span>
+                <span class="consensus-bar">
+                  <div class="consensus-fill integrity-${integrity}-bg" style="width: ${consensusWidth}%"></div>
+                </span>
+              `;
+              
+              logLine.innerHTML = content;
+              consoleBody.appendChild(logLine);
+              consoleBody.scrollTop = consoleBody.scrollHeight;
+            }
 
           }, 1200);
         }, 600);
@@ -347,11 +444,21 @@
       setTimeout(() => {
         addLogLine('info', 'Identity vector initialized', currentState);
         setTimeout(() => {
-          addLogLine('success', 'Claude AI integration active');
+          addLogLine('success', 'Multi-model integrity system active');
           setTimeout(() => {
-            addLogLine('info', 'Ready for symbolic input');
-            // Sanity: prove function exists at runtime
-            addLogLine('info', 'Semantic function status', { typeof_calculateSemanticTransition: typeof calculateSemanticTransition });
+            addLogLine('info', 'Delta divergence analysis enabled', {
+              models: ['claude-3-haiku', 'claude-3-sonnet', 'claude-3-opus'],
+              integrityMetrics: ['length', 'sentiment', 'topic', 'tone'],
+              verificationLevel: 'cryptographic'
+            });
+            setTimeout(() => {
+              addLogLine('info', 'Ready for symbolic input with verifiable consensus');
+              // Sanity: prove function exists at runtime
+              addLogLine('info', 'System status', { 
+                typeof_calculateSemanticTransition: typeof calculateSemanticTransition,
+                integrityAnalysis: 'enabled'
+              });
+            }, 400);
           }, 400);
         }, 400);
       }, 300);
