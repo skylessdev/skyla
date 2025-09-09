@@ -254,12 +254,15 @@ function selectBestConsensusResponse(responses, divergenceMetrics, input = '') {
       coherenceScore * weights.coherence + 
       architecturalBonus;
     
-    console.log(`🎯 ${response.model}: Quality=${qualityScore.toFixed(3)} (length=${lengthScore.toFixed(2)}, nuance=${nuanceScore.toFixed(2)}, efficiency=${efficiencyScore.toFixed(2)}, richness=${richnessScore.toFixed(2)}, coherence=${coherenceScore.toFixed(2)}, bonus=${architecturalBonus.toFixed(2)})`);
+    const bonusExplanation = architecturalBonus > 0 ? ` (+${architecturalBonus.toFixed(2)} efficiency bonus)` : '';
+    console.log(`🎯 ${response.model}: Quality=${qualityScore.toFixed(3)} (length=${lengthScore.toFixed(2)}, nuance=${nuanceScore.toFixed(2)}, efficiency=${efficiencyScore.toFixed(2)}, richness=${richnessScore.toFixed(2)}, coherence=${coherenceScore.toFixed(2)}, bonus=${architecturalBonus.toFixed(2)})${bonusExplanation}`);
     
     return {
       response: response,
       qualityScore: qualityScore,
-      selectionReason: `Quality: ${qualityScore.toFixed(3)} | ${queryAnalysis.type} query`
+      selectionReason: `Quality: ${qualityScore.toFixed(3)} | ${queryAnalysis.type} query`,
+      architecturalBonus: architecturalBonus,
+      breakdown: `${lengthScore.toFixed(2)}+${nuanceScore.toFixed(2)}+${efficiencyScore.toFixed(2)}+${richnessScore.toFixed(2)}+${coherenceScore.toFixed(2)}+${architecturalBonus.toFixed(2)}`
     };
   });
   
@@ -277,15 +280,23 @@ function selectBestConsensusResponse(responses, divergenceMetrics, input = '') {
     bestResponse = topResponses[0];
   }
   
-  // Enhanced selection logging with context awareness
-  const contextNote = queryAnalysis.complexity === 'high' && queryAnalysis.type !== 'analytical' ? 
-    ` (complex topic, simple query structure)` : '';
-  const selectionContext = topResponses.length > 1 ? 
-    `Tie-breaker: ${bestResponse.response.model} randomly selected from ${topResponses.length} equivalent responses` :
-    `Clear winner: ${bestResponse.response.model} outperformed by quality metrics`;
+  // Enhanced selection logging showing actual mathematical reasoning
+  const qualityDiff = responseScores.length > 1 ? 
+    (bestResponse.qualityScore - Math.max(...responseScores.filter(r => r !== bestResponse).map(r => r.qualityScore))).toFixed(3) : 
+    'N/A';
   
-  console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}${contextNote}`);
-  console.log(`💡 Selection reasoning: ${selectionContext}`);
+  const architecturalNote = bestResponse.architecturalBonus > 0 ? 
+    ` (includes +${bestResponse.architecturalBonus.toFixed(2)} architectural bonus)` : '';
+  
+  const selectionContext = topResponses.length > 1 ? 
+    `Mathematical tie (±0.001), randomly selected from ${topResponses.length} equivalent responses` :
+    `Mathematical selection: outperformed by ${qualityDiff} quality points${architecturalNote}`;
+  
+  console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}`);
+  console.log(`🔢 Mathematical reasoning: ${selectionContext}`);
+  if (bestResponse.architecturalBonus > 0) {
+    console.log(`⚡ Efficiency bonus applied: ${queryAnalysis.type} query type favored ${bestResponse.response.model}`);
+  }
   
   return bestResponse.response;
 }
