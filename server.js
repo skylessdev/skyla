@@ -53,6 +53,7 @@ function addToConversationHistory(sessionId, userInput, modelResponse, metadata)
     assistant: modelResponse,
     metadata: {
       identityVector: metadata.identityVector,
+      identityVectorLabeled: metadata.identityVectorLabeled,
       mode: metadata.mode,
       protocols: metadata.protocols,
       integrityScore: metadata.integrityScore
@@ -812,6 +813,12 @@ app.post("/api/claude", async (req, res) => {
       integrityResult.primaryResponse.response,
       {
         identityVector: currentState.identityVector,
+        identityVectorLabeled: {
+          cognitive: currentState.identityVector[0],
+          emotional: currentState.identityVector[1], 
+          adaptive: currentState.identityVector[2],
+          coherence: currentState.identityVector[3]
+        },
         mode: currentState.mode,
         protocols: currentState.protocols,
         integrityScore: integrityResult.integrityScore
@@ -836,6 +843,12 @@ app.post("/api/claude", async (req, res) => {
           consensusStrength: integrityResult.consensusStrength,
           divergenceMetrics: integrityResult.divergenceMetrics,
           epistemicAnalysis: epistemicGateResult,
+          identityVectorLabeled: {
+            cognitive: currentState.identityVector[0],
+            emotional: currentState.identityVector[1],
+            adaptive: currentState.identityVector[2],
+            coherence: currentState.identityVector[3]
+          },
           enhancedProof: enhancedProof,
           contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
           timestamp: new Date().toISOString()
@@ -858,6 +871,12 @@ app.post("/api/claude", async (req, res) => {
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
             epistemicAnalysis: epistemicGateResult,
+            identityVectorLabeled: {
+              cognitive: currentState.identityVector[0],
+              emotional: currentState.identityVector[1],
+              adaptive: currentState.identityVector[2],
+              coherence: currentState.identityVector[3]
+            },
             enhancedProof: enhancedProof,
             contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             timestamp: new Date().toISOString()
@@ -878,6 +897,12 @@ app.post("/api/claude", async (req, res) => {
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
             epistemicAnalysis: epistemicGateResult,
+            identityVectorLabeled: {
+              cognitive: currentState.identityVector[0],
+              emotional: currentState.identityVector[1],
+              adaptive: currentState.identityVector[2],
+              coherence: currentState.identityVector[3]
+            },
             enhancedProof: enhancedProof,
             contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             fallback: integrityResult.fallback || false,
@@ -898,6 +923,12 @@ app.post("/api/claude", async (req, res) => {
             consensusStrength: integrityResult.consensusStrength,
             divergenceMetrics: integrityResult.divergenceMetrics,
             epistemicAnalysis: epistemicGateResult,
+            identityVectorLabeled: {
+              cognitive: currentState.identityVector[0],
+              emotional: currentState.identityVector[1],
+              adaptive: currentState.identityVector[2],
+              coherence: currentState.identityVector[3]
+            },
             enhancedProof: enhancedProof,
             contextMemory: `${conversationSessions.get(sessionId).messages.length} exchanges remembered`,
             timestamp: new Date().toISOString()
