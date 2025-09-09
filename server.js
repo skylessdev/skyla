@@ -277,7 +277,15 @@ function selectBestConsensusResponse(responses, divergenceMetrics, input = '') {
     bestResponse = topResponses[0];
   }
   
-  console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}`);
+  // Enhanced selection logging with context awareness
+  const contextNote = queryAnalysis.complexity === 'high' && queryAnalysis.type !== 'analytical' ? 
+    ` (complex topic, simple query structure)` : '';
+  const selectionContext = topResponses.length > 1 ? 
+    `Tie-breaker: ${bestResponse.response.model} randomly selected from ${topResponses.length} equivalent responses` :
+    `Clear winner: ${bestResponse.response.model} outperformed by quality metrics`;
+  
+  console.log(`🏆 Selected ${bestResponse.response.model}: ${bestResponse.selectionReason}${contextNote}`);
+  console.log(`💡 Selection reasoning: ${selectionContext}`);
   
   return bestResponse.response;
 }
