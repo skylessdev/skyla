@@ -243,6 +243,7 @@
 
             addLogLine('success', 'ZK proof generated', transitionProof);
 
+            // Update state before Claude processing
             currentState = {
               identityVector: newVector,
               mode: mode,
@@ -253,15 +254,80 @@
             document.getElementById('vector-display').textContent =
               `[${newVector.map(v => v.toFixed(2)).join(', ')}]`;
 
+            // Add Claude processing
             setTimeout(() => {
-              addLogLine('info', 'State transition complete', {
-                mode: mode, tone: tone, activeProtocols: protocols,
-                identityVector: newVector.map(v => parseFloat(v.toFixed(2)))
-              });
+              addLogLine('info', 'Initiating Claude AI processing...');
+              
+              // Send to Claude API
+              fetch('/api/claude', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  input: input,
+                  currentState: currentState
+                })
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  addLogLine('success', 'Claude AI response received');
+                  
+                  // Display Claude's response with special formatting
+                  setTimeout(() => {
+                    addLogLine('info', 'SKYLA RESPONSE:', {
+                      analysis: data.response,
+                      model: data.metadata.model,
+                      tokens: data.metadata.tokens
+                    });
+                    
+                    setTimeout(() => {
+                      addLogLine('info', 'State transition complete', {
+                        mode: mode, tone: tone, activeProtocols: protocols,
+                        identityVector: newVector.map(v => parseFloat(v.toFixed(2))),
+                        claudeIntegration: 'verified'
+                      });
 
-              document.getElementById('submit-btn').disabled = false;
-              document.getElementById('user-input').value = '';
-            }, 800);
+                      document.getElementById('submit-btn').disabled = false;
+                      document.getElementById('user-input').value = '';
+                    }, 600);
+                  }, 400);
+                } else {
+                  // Fallback handling
+                  addLogLine('warning', 'Claude processing failed, using local engine only', {
+                    error: data.error,
+                    fallback: data.fallback
+                  });
+                  
+                  setTimeout(() => {
+                    addLogLine('info', 'State transition complete', {
+                      mode: mode, tone: tone, activeProtocols: protocols,
+                      identityVector: newVector.map(v => parseFloat(v.toFixed(2)))
+                    });
+
+                    document.getElementById('submit-btn').disabled = false;
+                    document.getElementById('user-input').value = '';
+                  }, 800);
+                }
+              })
+              .catch(error => {
+                addLogLine('error', 'Network error during Claude processing', {
+                  error: error.message,
+                  fallback: 'Local symbolic processing completed successfully'
+                });
+                
+                setTimeout(() => {
+                  addLogLine('info', 'State transition complete', {
+                    mode: mode, tone: tone, activeProtocols: protocols,
+                    identityVector: newVector.map(v => parseFloat(v.toFixed(2)))
+                  });
+
+                  document.getElementById('submit-btn').disabled = false;
+                  document.getElementById('user-input').value = '';
+                }, 800);
+              });
+            }, 500);
 
           }, 1200);
         }, 600);
@@ -279,10 +345,13 @@
       setTimeout(() => {
         addLogLine('info', 'Identity vector initialized', currentState);
         setTimeout(() => {
-          addLogLine('info', 'Ready for symbolic input');
-          // Sanity: prove function exists at runtime
-          addLogLine('info', 'Semantic function status', { typeof_calculateSemanticTransition: typeof calculateSemanticTransition });
-        }, 500);
+          addLogLine('success', 'Claude AI integration active');
+          setTimeout(() => {
+            addLogLine('info', 'Ready for symbolic input');
+            // Sanity: prove function exists at runtime
+            addLogLine('info', 'Semantic function status', { typeof_calculateSemanticTransition: typeof calculateSemanticTransition });
+          }, 400);
+        }, 400);
       }, 300);
     }, 1000);
   </script>

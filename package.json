@@ -5,6 +5,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.61.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2"
   }
