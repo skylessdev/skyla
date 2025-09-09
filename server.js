@@ -339,15 +339,23 @@ function analyzeConversationalContext(input, sessionContext) {
   // Pattern 1: Pronoun reference resolution ("this", "it", "that")
   const pronouns = inputText.match(/\b(this|that|it)\b/);
   if (pronouns && conversationContext.recentTopics.length > 0) {
-    const mostRecentTopic = conversationContext.recentTopics[0];
-    return {
-      canResolveAmbiguity: true,
-      reason: "PRONOUN_REFERENCE_RESOLVED",
-      resolution: `"${pronouns[0]}" likely refers to "${mostRecentTopic}" from recent conversation`,
-      confidence: 0.8,
-      referent: mostRecentTopic,
-      contextTopics: conversationContext.recentTopics
-    };
+    // Filter out circular references (don't resolve "this" with "this")
+    const meaningfulTopics = conversationContext.recentTopics.filter(topic => 
+      !['this', 'that', 'it', 'they', 'them'].includes(topic.toLowerCase()) &&
+      topic.length > 3  // Avoid very short, likely meaningless words
+    );
+    
+    if (meaningfulTopics.length > 0) {
+      const mostRecentTopic = meaningfulTopics[0];
+      return {
+        canResolveAmbiguity: true,
+        reason: "PRONOUN_REFERENCE_RESOLVED",
+        resolution: `"${pronouns[0]}" likely refers to "${mostRecentTopic}" from recent conversation`,
+        confidence: 0.8,
+        referent: mostRecentTopic,
+        contextTopics: meaningfulTopics
+      };
+    }
   }
   
   // Pattern 2: Topic continuity ("How do I fix this?" after discussing React errors)
