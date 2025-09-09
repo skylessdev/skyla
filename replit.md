@@ -1,6 +1,6 @@
 # Overview
 
-Skyla is a static website project built with Node.js and Express, featuring a console-style interface for demonstrating a symbolic AI agent with cryptographic verification capabilities. The site includes a minimal homepage, an interactive console demo, documentation pages, and a sign-in interface. The project emphasizes clean, minimal design with a beige color scheme and monospace typography.
+Skyla is a dynamic web application built with Node.js and Express, featuring a Claude AI-integrated console interface for demonstrating a symbolic AI agent with cryptographic verification capabilities. The platform includes Claude API integration, real-time AI processing, an interactive console demo, documentation pages, and maintains symbolic consistency through advanced state management. The project emphasizes clean, minimal design with a beige color scheme and monospace typography.
 
 # User Preferences
 
@@ -28,17 +28,20 @@ Preferred communication style: Simple, everyday language.
 - **Interactive Elements**: Console demo includes state management, input processing, and animated logging
 
 ## Console Demo Features
+- **Claude AI Integration**: Real-time processing through Claude API with context-aware responses
 - **State Management**: JavaScript-based identity vector system with real-time updates
 - **Symbolic Rules Engine**: Pattern matching for specific commands (spiral, daemon, build, analyze)
 - **Semantic Processing**: Fallback system using regex categories and deterministic hash-based adjustments
-- **Proof Generation**: Mock cryptographic proof system with timestamps and state hashing
+- **Proof Generation**: Enhanced cryptographic proof system with Claude interaction verification
 - **Animated Logging**: Console-style output with colored log levels and syntax-highlighted JSON
+- **AI Response Display**: Formatted display of Claude analysis alongside symbolic state transitions
 
 # External Dependencies
 
 ## Runtime Dependencies
 - **Express.js (^4.21.2)**: Web server framework for Node.js, handles routing and template rendering
 - **EJS (^3.1.9)**: Embedded JavaScript templating engine for dynamic HTML generation
+- **@anthropic-ai/sdk**: Official Anthropic SDK for Claude AI integration and API communication
 
 ## Development Stack
 - **Node.js**: JavaScript runtime environment using ES modules
