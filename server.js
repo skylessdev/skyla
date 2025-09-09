@@ -10,15 +10,20 @@ const PORT = process.env.PORT || 5000;
 
 // Validate required environment variables
 if (!process.env.CLAUDE_API_KEY) {
-  console.error('❌ CLAUDE_API_KEY environment variable is required but not set');
-  console.error('Please configure CLAUDE_API_KEY in your deployment environment');
-  process.exit(1);
+  console.warn('⚠️ CLAUDE_API_KEY environment variable is not set');
+  console.warn('AI features will be disabled until CLAUDE_API_KEY is configured');
 }
 
-// Initialize Claude client
-const anthropic = new Anthropic({
-  apiKey: process.env.CLAUDE_API_KEY,
-});
+// Initialize Claude client only if API key is available
+let anthropic = null;
+if (process.env.CLAUDE_API_KEY) {
+  anthropic = new Anthropic({
+    apiKey: process.env.CLAUDE_API_KEY,
+  });
+  console.log('✅ Claude AI client initialized successfully');
+} else {
+  console.log('ℹ️ Claude AI client not initialized - API key missing');
+}
 
 // Middleware for parsing JSON
 app.use(express.json());
