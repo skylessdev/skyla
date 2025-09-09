@@ -37,3 +37,4 @@ packages = ["jq"]
 [deployment]
 deploymentTarget = "autoscale"
 run = ["npm", "start"]
+build = ["npm", "install"]

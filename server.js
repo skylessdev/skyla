@@ -8,6 +8,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Validate required environment variables
+if (!process.env.CLAUDE_API_KEY) {
+  console.error('❌ CLAUDE_API_KEY environment variable is required but not set');
+  console.error('Please configure CLAUDE_API_KEY in your deployment environment');
+  process.exit(1);
+}
+
 // Initialize Claude client
 const anthropic = new Anthropic({
   apiKey: process.env.CLAUDE_API_KEY,
