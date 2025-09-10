@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import Anthropic from "@anthropic-ai/sdk";
+import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,8 +55,13 @@ if (envStatus.hasApiKey) {
   console.log('ℹ️ Claude AI client not initialized - API key missing');
 }
 
-// Middleware for parsing JSON
+// Middleware for parsing JSON, URL-encoded data, and cookies
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Simple session storage for spec access
+const specSessions = new Set();
 
 // ================== CONVERSATION MEMORY SYSTEM ==================
 
@@ -1197,11 +1203,52 @@ function generateIntegrityHash(integrityResult) {
   return "0x" + Math.abs(hash).toString(16).padStart(8, '0');
 }
 
+// Simple session ID generation
+function generateSessionId() {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
+// Middleware to check spec access
+function requireSpecAccess(req, res, next) {
+  const sessionId = req.cookies['spec-session'] || req.query.session;
+  
+  if (sessionId && specSessions.has(sessionId)) {
+    return next();
+  }
+  
+  res.render("password-gate");
+}
+
 // routes
 app.get("/", (req, res) => res.render("index"));
 app.get("/demo", (req, res) => res.render("demo"));
 app.get("/docs", (req, res) => res.render("docs"));
-app.get("/spec", (req, res) => res.render("spec"));
+
+// Protected spec route
+app.get("/spec", requireSpecAccess, (req, res) => {
+  res.render("spec");
+});
+
+// Spec authentication
+app.post("/spec/auth", (req, res) => {
+  const { password } = req.body;
+  const correctPassword = process.env.SPEC_PASSWORD || "skyla2025";
+  
+  if (password === correctPassword) {
+    const sessionId = generateSessionId();
+    specSessions.add(sessionId);
+    
+    // Set session cookie and redirect
+    res.cookie('spec-session', sessionId, { 
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      httpOnly: true 
+    });
+    res.redirect(`/spec?session=${sessionId}`);
+  } else {
+    res.render("password-gate", { error: "Invalid password. Please try again." });
+  }
+});
+
 app.use((_, res) => res.render("index"));
 
 app.listen(PORT, () => console.log(`Skyla site running on http://localhost:${PORT}`));
