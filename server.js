@@ -1201,6 +1201,7 @@ function generateIntegrityHash(integrityResult) {
 app.get("/", (req, res) => res.render("index"));
 app.get("/demo", (req, res) => res.render("demo"));
 app.get("/docs", (req, res) => res.render("docs"));
+app.get("/spec", (req, res) => res.render("spec"));
 app.use((_, res) => res.render("index"));
 
 app.listen(PORT, () => console.log(`Skyla site running on http://localhost:${PORT}`));
