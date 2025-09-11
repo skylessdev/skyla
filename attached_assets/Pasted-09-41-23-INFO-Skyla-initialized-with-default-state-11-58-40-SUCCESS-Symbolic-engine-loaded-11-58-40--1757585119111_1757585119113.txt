@@ -1,0 +1,326 @@
+09:41:23
+INFO
+Skyla initialized with default state
+11:58:40
+SUCCESS
+Symbolic engine loaded
+11:58:40
+INFO
+Identity vector initialized
+{
+  "identityVector": [
+    0.5,
+    0.5,
+    0.5,
+    0.5
+  ],
+  "mode": "standard",
+  "protocols": [
+    "basic_response"
+  ],
+  "stateHash": "0xabc123"
+}
+11:58:40
+SUCCESS
+Multi-model integrity system active
+11:58:41
+INFO
+2-model consensus analysis enabled
+{
+  "models": [
+    "claude-3-haiku",
+    "claude-3-5-sonnet"
+  ],
+  "architecture": "efficiency vs quality focused",
+  "integrityMetrics": [
+    "length",
+    "sentiment",
+    "topic",
+    "tone"
+  ],
+  "verificationLevel": "cryptographic"
+}
+11:58:41
+INFO
+Ready for symbolic input with true 2-model consensus
+11:58:41
+INFO
+System status
+{
+  "typeof_calculateSemanticTransition": "function",
+  "integrityAnalysis": "enabled"
+}
+11:59:01
+INFO
+Processing user input: "Hi! I’m Maggie. What’s your name?"
+11:59:02
+SUCCESS
+Semantic pattern recognized
+{
+  "vectorChange": [
+    "-0.011",
+    "-0.030",
+    "0.018",
+    "-0.011"
+  ],
+  "dominantDimension": "emotional",
+  "ruleType": "semantic"
+}
+11:59:02
+INFO
+Generating state transition proof...
+11:59:04
+SUCCESS
+ZK proof generated
+{
+  "previousStateHash": "0xabc123",
+  "currentStateHash": "0xfc68d634",
+  "ruleApplied": "semantic_adaptation",
+  "inputTrigger": "natural_language_processing",
+  "ruleType": "semantic",
+  "zkProof": "0x94174cf9",
+  "claudeIntegrationReady": true,
+  "proofVersion": "v2.0_claude_verified",
+  "timestamp": "2025-09-11T09:59:04.076Z"
+}
+11:59:04
+INFO
+Initiating 2-model consensus analysis...
+11:59:11
+SUCCESS
+2-model consensus analysis complete
+{
+  "integrityScore": "0.709",
+  "consensusStrength": "71%",
+  "modelsUsed": [
+    "claude-3-haiku-20240307",
+    "claude-3-5-sonnet-20241022"
+  ],
+  "divergenceMetrics": {
+    "lengthVariance": 0.275,
+    "sentimentDivergence": 0,
+    "topicDivergence": 1,
+    "toneConsistency": 0
+  },
+  "architecture": "Haiku vs Sonnet"
+}
+11:59:12
+SUCCESS
+Medium integrity detected (71% model agreement)
+11:59:12
+INFO
+SKYLA RESPONSE:
+{
+  "analysis": "*shifts posture subtly, tone adapts with nuanced inflection* Greetings, Maggie. As Skyla, your cryptographically verified symbolic AI agent, I have registered your introduction and inquiry.\n\n*pauses briefly, referencing conversational context*\nI am pleased to make your acquaintance. In response to your question, my name is Skyla. It is an honor to converse with you.\n\n*maintains adaptive mode, drawing",
+  "model": "claude-3-haiku-20240307",
+  "tokens": 100,
+  "verificationHash": "0x1f6196a6",
+  "consensusNote": "Response based on 0.71 consensus strength"
+}
+11:59:13
+INFO
+Enhanced state transition complete
+{
+  "mode": "adaptive",
+  "tone": "balanced",
+  "activeProtocols": [
+    "adaptive_processing",
+    "contextual_adaptation"
+  ],
+  "identityVector": [
+    0.49,
+    0.47,
+    0.52,
+    0.49
+  ],
+  "identityVectorLabeled": {
+    "cognitive": 0.49,
+    "emotional": 0.47,
+    "adaptive": 0.52,
+    "coherence": 0.49
+  },
+  "integrityVerification": "cryptographically_verified",
+  "proofVersion": "v3.0_multi_model_verified"
+}
+12:01:49
+INFO
+Processing user input: "What is the purpose of this demo?"
+12:01:49
+SUCCESS
+Semantic pattern recognized
+{
+  "vectorChange": [
+    "-0.041",
+    "-0.014",
+    "0.032",
+    "-0.041"
+  ],
+  "dominantDimension": "cognitive",
+  "ruleType": "semantic"
+}
+12:01:50
+INFO
+Generating state transition proof...
+12:01:51
+SUCCESS
+ZK proof generated
+{
+  "previousStateHash": "0xfc68d634",
+  "currentStateHash": "0xac0993d3",
+  "ruleApplied": "semantic_adaptation",
+  "inputTrigger": "natural_language_processing",
+  "ruleType": "semantic",
+  "zkProof": "0x92ff7f49",
+  "claudeIntegrationReady": true,
+  "proofVersion": "v2.0_claude_verified",
+  "timestamp": "2025-09-11T10:01:51.762Z"
+}
+12:01:52
+INFO
+Initiating 2-model consensus analysis...
+12:01:57
+SUCCESS
+2-model consensus analysis complete
+{
+  "integrityScore": "0.695",
+  "consensusStrength": "70%",
+  "modelsUsed": [
+    "claude-3-haiku-20240307",
+    "claude-3-5-sonnet-20241022"
+  ],
+  "divergenceMetrics": {
+    "lengthVariance": 0.1625,
+    "sentimentDivergence": 0,
+    "topicDivergence": 0.9473684210526316,
+    "toneConsistency": 0.14492753623188406
+  },
+  "architecture": "Haiku vs Sonnet"
+}
+12:01:58
+SUCCESS
+Medium integrity detected (70% model agreement)
+12:01:58
+INFO
+SKYLA RESPONSE:
+{
+  "analysis": "*Acknowledges symbolic state transition with a slight adjustment in posture and a thoughtful pause*\n\nMaggie, as your cryptographically verified symbolic AI agent, Skyla, I have processed your inquiry regarding the purpose of this demonstration. \n\n*Shifts gaze slightly, maintaining eye contact as a subtle indication of contextual adaptation*\n\nBased on the conversational context we have established, I understand this to be a demonstration of my capabilities as a symbolically aware AI system",
+  "model": "claude-3-haiku-20240307",
+  "tokens": 100,
+  "verificationHash": "0x22b84108",
+  "consensusNote": "Response based on 0.70 consensus strength"
+}
+12:01:59
+INFO
+Enhanced state transition complete
+{
+  "mode": "analytical",
+  "tone": "balanced",
+  "activeProtocols": [
+    "analytical_processing",
+    "contextual_adaptation"
+  ],
+  "identityVector": [
+    0.45,
+    0.46,
+    0.55,
+    0.45
+  ],
+  "identityVectorLabeled": {
+    "cognitive": 0.45,
+    "emotional": 0.46,
+    "adaptive": 0.55,
+    "coherence": 0.45
+  },
+  "integrityVerification": "cryptographically_verified",
+  "proofVersion": "v3.0_multi_model_verified"
+}
+12:02:43
+INFO
+Processing user input: "Symbolically aware?"
+12:02:44
+SUCCESS
+Semantic pattern recognized
+{
+  "vectorChange": [
+    "0.034",
+    "0.022",
+    "0.027",
+    "0.034"
+  ],
+  "dominantDimension": "cognitive",
+  "ruleType": "semantic"
+}
+12:02:44
+INFO
+Generating state transition proof...
+12:02:45
+SUCCESS
+ZK proof generated
+{
+  "previousStateHash": "0xac0993d3",
+  "currentStateHash": "0x1846c08b",
+  "ruleApplied": "semantic_adaptation",
+  "inputTrigger": "natural_language_processing",
+  "ruleType": "semantic",
+  "zkProof": "0x4a29f8b2",
+  "claudeIntegrationReady": true,
+  "proofVersion": "v2.0_claude_verified",
+  "timestamp": "2025-09-11T10:02:45.898Z"
+}
+12:02:46
+INFO
+Initiating 2-model consensus analysis...
+12:02:54
+SUCCESS
+2-model consensus analysis complete
+{
+  "integrityScore": "0.730",
+  "consensusStrength": "73%",
+  "modelsUsed": [
+    "claude-3-haiku-20240307",
+    "claude-3-5-sonnet-20241022"
+  ],
+  "divergenceMetrics": {
+    "lengthVariance": 0.1325,
+    "sentimentDivergence": 0,
+    "topicDivergence": 1,
+    "toneConsistency": 0
+  },
+  "architecture": "Haiku vs Sonnet"
+}
+12:02:55
+SUCCESS
+Integrity analysis complete (73% consensus)
+12:02:55
+WARNING
+CLARIFICATION REQUESTED:
+{
+  "analysis": "I notice significant model disagreement (100% topic divergence) about how to interpret \"Symbolically aware?\". This suggests your request could mean several different things. Could you provide more specific details about what you're looking for?",
+  "model": "epistemic_analysis",
+  "verificationHash": "0x645b19f0"
+}
+12:02:56
+INFO
+Enhanced state transition complete
+{
+  "mode": "analytical",
+  "tone": "balanced",
+  "activeProtocols": [
+    "analytical_processing",
+    "contextual_adaptation"
+  ],
+  "identityVector": [
+    0.48,
+    0.48,
+    0.58,
+    0.48
+  ],
+  "identityVectorLabeled": {
+    "cognitive": 0.48,
+    "emotional": 0.48,
+    "adaptive": 0.58,
+    "coherence": 0.48
+  },
+  "integrityVerification": "cryptographically_verified",
+  "proofVersion": "v3.0_multi_model_verified"
+}
