@@ -111,7 +111,7 @@ function buildContextualPrompt(sessionId, currentState, userInput) {
     const recentMessages = session.messages.slice(-4);
     contextHistory = "\nRecent conversation history:\n" + 
       recentMessages.map(msg => 
-        `User: "${msg.user}"\nSkyla: "${msg.assistant.substring(0, 200)}${msg.assistant.length > 200 ? '...' : ''}"`
+        `User: "${msg.user}"\nSkyla: "${msg.assistant}"`
       ).join('\n\n') + "\n\n";
   }
 
@@ -662,7 +662,7 @@ async function performMultiModelIntegrityCheck(input, currentState, systemPrompt
         console.log(`📤 Calling ${model} (${i + 1}/${models.length})...`);
         // Dynamic token allocation based on input complexity
         const inputLength = input.length;
-        const dynamicTokens = inputLength > 100 ? 200 : inputLength > 50 ? 150 : 100;
+        const dynamicTokens = inputLength > 100 ? 800 : inputLength > 50 ? 600 : 400;
         
         const message = await anthropic.messages.create({
           model: model,
