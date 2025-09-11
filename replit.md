@@ -27,7 +27,7 @@ Preferred communication style: Simple, everyday language.
 ### Advanced Model Selection Logic
 - **Quality Analysis Algorithm**: Mathematical scoring across 5 sophisticated metrics
 - **Architectural Bonuses**: +0.1 bonus for Haiku on simple queries, +0.1 for Sonnet on complex queries
-- **Dynamic Token Allocation**: 100-200 tokens based on input complexity
+- **Dynamic Token Allocation**: 400-800 tokens based on input complexity
 - **Transparent Logging**: Detailed quality breakdowns and selection reasoning
 
 ## Frontend Architecture
