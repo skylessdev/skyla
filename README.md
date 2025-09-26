@@ -1,4 +1,4 @@
-# Skyla
+# skyla.dev
 
 **AI reasoning transparency through multi-model analysis**
 
